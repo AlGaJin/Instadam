@@ -1,16 +1,16 @@
 package com.chex.instadam.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import androidx.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,5 +61,22 @@ public class HomeFragment extends Fragment {
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new HomeFeedAdapter(posts));
         return v;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences sP = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = sP.edit();
+        editor.putInt("homeScroll", ((LinearLayoutManager) rv.getLayoutManager()).findFirstCompletelyVisibleItemPosition());
+        editor.commit();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        SharedPreferences sP = PreferenceManager.getDefaultSharedPreferences(getContext());
+        rv.getLayoutManager().scrollToPosition(sP.getInt("homeScroll", 0));
     }
 }
