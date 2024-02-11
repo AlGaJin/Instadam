@@ -65,6 +65,8 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        ((MainActivity) getActivity()).desactivarBtnNav();
+
         posts = new ArrayList<>();
         posts.add(new Post(R.drawable.user_img_1, R.drawable.tyto_alba,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
         posts.add(new Post(R.drawable.user_img_1, R.drawable.hongo,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
@@ -144,5 +146,11 @@ public class ProfileFragment extends Fragment {
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
                 .replace(R.id.frLyt, new HomeFragment()).commit();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) getActivity()).activarBtnNav();
     }
 }

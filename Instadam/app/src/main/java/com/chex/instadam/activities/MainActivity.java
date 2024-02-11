@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -172,23 +171,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Método que cambia la visibilidad del Bottom Navigation View,
-     * además cambia los constraint para ocupar toda la pantalla si
-     * se oculta el Bttm Nav View; o lo contrario si se muestra.
+     * Oculta el Bottom Navigation y actualiza el ConstraintLayout del Frame
+     * para ocupar toda la pantalla.
      */
-    public void cambiarVisibilidadBttmNav(){
+    public void desactivarBtnNav(){
         ConstraintLayout cLyt = findViewById(R.id.constraintLyt);
         ConstraintSet cSet = new ConstraintSet();
         cSet.clone(cLyt);
 
-        if(bttmNav.getVisibility() == View.VISIBLE){
-            cSet.connect(R.id.frLyt, ConstraintSet.BOTTOM, R.id.constraintLyt,ConstraintSet.BOTTOM);
-            cSet.applyTo(cLyt);
-            bttmNav.setVisibility(View.INVISIBLE);
-        }else{
-            cSet.connect(R.id.frLyt, ConstraintSet.BOTTOM, R.id.bttmNavView,ConstraintSet.TOP);
-            cSet.applyTo(cLyt);
-            bttmNav.setVisibility(View.VISIBLE);
+        cSet.connect(R.id.frLyt, ConstraintSet.BOTTOM, R.id.constraintLyt,ConstraintSet.BOTTOM);
+        cSet.applyTo(cLyt);
+        bttmNav.setVisibility(View.INVISIBLE);
+    }
+    /**
+     * Muestra el Bottom Navigation y actualiza el ConstraintLayout del Frame
+     * para ocupar hasta el inicio del Bottom Navigation Menu.
+     */
+    public void activarBtnNav(){
+        ConstraintLayout cLyt = findViewById(R.id.constraintLyt);
+        ConstraintSet cSet = new ConstraintSet();
+        cSet.clone(cLyt);
+
+        cSet.connect(R.id.frLyt, ConstraintSet.BOTTOM, R.id.bttmNavView,ConstraintSet.TOP);
+        cSet.applyTo(cLyt);
+        bttmNav.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(bttmNav.getVisibility() == View.INVISIBLE){
+            activarBtnNav();
         }
     }
 }

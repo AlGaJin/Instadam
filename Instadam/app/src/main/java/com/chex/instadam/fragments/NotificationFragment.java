@@ -40,7 +40,6 @@ public class NotificationFragment extends Fragment {
         ab.setTitle("");
         ab.setDisplayHomeAsUpEnabled(true);
         menu.clear();
-        getActivity().getMenuInflater().inflate(R.menu.notification_tb_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -56,6 +55,7 @@ public class NotificationFragment extends Fragment {
         rv = v.findViewById(R.id.fgt_noti_rv);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new NotificationFeedAdapter(notifications));
+        ((MainActivity) getActivity()).desactivarBtnNav();
 
         //Cambiar la función del botón Back en el móvil
         ((MainActivity) requireActivity()).getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -73,5 +73,11 @@ public class NotificationFragment extends Fragment {
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
                 .replace(R.id.frLyt, new HomeFragment()).commit();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) getActivity()).activarBtnNav();
     }
 }
