@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Instadam</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="message">Message</string>
+    <string name="profile">My profile</string>
+    <string name="nombre_cientifico">Science name:</string>
+    <string name="nombre_comun">Common name:</string>
+    <string name="notificaciones">Notification</string>
+    <string name="ver_comentarios">Show comments</string>
+    <string name="settings">Settings</string>
+    <string name="filtrar">Filter</string>
+    <string name="compendio">Compendium</string>
+    <string name="seguidores">Followers</string>
+    <string name="seguidos">Following</string>
+    <string-array name="spinner_list">
+        <item>Filter</item>
+        <item>Not opened</item>
+        <item>Date</item>
+    </string-array>
+    <string name="login_usarname_hint">Email or username</string>
+    <string name="contrasenia">Password</string>
+    <string name="split_o">Or</string>
+    <string name="iniciar_sesion">Log in</string>
+    <string name="registrarse">Sign up</string>
+    <string-array name="Idioma">
+        <item>Spanish</item>
+        <item>English</item>
+    </string-array>
+    <string name="correo">Email</string>
+    <string name="nombre_de_usuario">Username</string>
+    <string name="confirmar_contrasenia">Confirm Pasword</string>
+    <string name="error_pwd">Passwords do not match</string>
+    <string name="rellena_campos">Fill in all the fields</string>
+    <string name="editar_perfil">Edit profile</string>
+    <string name="ajustes">Settings</string>
+</resources>

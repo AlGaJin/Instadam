@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Instadam</string>
+    <string name="home">Inicio</string>
+    <string name="search">Buscar</string>
+    <string name="message">Mensajes</string>
+    <string name="profile">Mi perfil</string>
+    <string name="nombre_cientifico">Nombre cientifico:</string>
+    <string name="nombre_comun">Nombre común:</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="ver_comentarios">Ver comentarios</string>
+    <string name="settings">Configuración</string>
+    <string name="filtrar">Filtrar</string>
+    <string name="compendio">Compendio</string>
+    <string name="seguidores">Seguidores</string>
+    <string name="seguidos">Seguidos</string>
+    <string name="login_usarname_hint">Correo electrónico o usuario</string>
+    <string name="contrasenia">Contraseña</string>
+    <string name="split_o">O</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="correo">Correo electrónico</string>
+    <string name="nombre_de_usuario">Nombre de usuario</string>
+    <string name="confirmar_contrasenia">Confirmar contraseña</string>
+    <string-array name="Idioma">
+        <item>Español</item>
+        <item>Inglés</item>
+    </string-array>
+    <string-array name="spinner_list">
+        <item>Filtrar</item>
+        <item>No leídos</item>
+        <item>Fecha</item>
+    </string-array>
+    <string name="error_pwd">Las contraseñas no coinciden</string>
+    <string name="rellena_campos">Rellena todos los campos</string>
+    <string name="editar_perfil">Editar perfil</string>
+    <string name="ajustes">Ajustes</string>
+</resources>

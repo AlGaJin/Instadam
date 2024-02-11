@@ -1,0 +1,28 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Instadam" parent="Theme.MaterialComponents.DayNight">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/acentoOscuro</item>
+        <item name="colorPrimaryDark">@color/primarioOscuro</item>
+        <item name="colorAccent">@color/primarioClaro</item>
+        <item name="android:navigationBarColor">@color/primarioOscuro</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorSurface">@color/acentoOscuro</item>
+        <item name="android:statusBarColor">@color/primarioOscuro</item>
+    </style>
+
+    <style name="MiBtnNavStyle">
+        <item name="android:background">@color/acentoOscuro</item>
+        <item name="itemIconTint">@color/dark_bottom_navigation_selector</item>
+        <item name="itemTextColor">@color/dark_bottom_navigation_selector</item>
+        <item name="itemBackground">@color/acentoOscuro</item>
+    </style>
+
+    <style name="roundImgView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+
+    <style name="Theme.Instadam" parent="Base.Theme.Instadam" />
+</resources>
