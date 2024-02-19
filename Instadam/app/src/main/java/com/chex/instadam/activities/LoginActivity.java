@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
             if(name.isEmpty() || pwd.isEmpty()){
                 Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
             }else{
-                Integer userId = bdHelper.login_user(new String[]{name, pwd});
+                Integer userId = bdHelper.login_user(new String[]{name, name, pwd});
                 if(userId != null){
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("userId", userId);

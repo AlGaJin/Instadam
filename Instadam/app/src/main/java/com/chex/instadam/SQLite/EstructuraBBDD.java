@@ -119,6 +119,6 @@ public class EstructuraBBDD {
                 EstructuraBBDD.COLUMN_PROFILE_PIC,
                 EstructuraBBDD.COLUMN_DSCRIP};
 
-    public static final String login_selection = EstructuraBBDD.COLUMN_USERNAME + "=? OR "
-            + EstructuraBBDD.COLUMN_EMAIL + "=? AND " + EstructuraBBDD.COLUMN_PASSWORD + "=?";
+    public static final String login_selection = "(" + EstructuraBBDD.COLUMN_USERNAME + "=? OR "
+            + EstructuraBBDD.COLUMN_EMAIL + "=?) AND " + EstructuraBBDD.COLUMN_PASSWORD + "=?";
 }

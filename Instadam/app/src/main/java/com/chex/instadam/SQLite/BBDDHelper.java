@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.chex.instadam.java.User;
 
@@ -63,7 +64,7 @@ public class BBDDHelper extends SQLiteOpenHelper {
 
     public Integer login_user(String[] selectionArgs){
 
-        selectionArgs[1] = encrypt(selectionArgs[1]);
+        selectionArgs[2] = encrypt(selectionArgs[2]);
 
         Cursor cursor = this.getReadableDatabase().query(
                 EstructuraBBDD.TABLE_USERS,
@@ -75,7 +76,7 @@ public class BBDDHelper extends SQLiteOpenHelper {
 
         if(cursor.moveToNext()){
             int id = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
-
+            Log.d("BBDDHelper", "AQUI AQUI AQUI: " + cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_USERNAME)));
             return id;
         }
 
