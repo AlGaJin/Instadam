@@ -34,4 +34,7 @@
     <string name="rellena_campos">Rellena todos los campos</string>
     <string name="editar_perfil">Editar perfil</string>
     <string name="ajustes">Ajustes</string>
+    <string name="login_error">Contraseña o usuario invalidos</string>
+    <string name="username_error">Nombre de usuario no disponible</string>
+    <string name="email_error">Correo electrónico ya registrado</string>
 </resources>

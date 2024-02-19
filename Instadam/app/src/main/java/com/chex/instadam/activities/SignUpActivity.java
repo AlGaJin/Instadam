@@ -17,7 +17,6 @@ import java.util.Calendar;
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText emailEditTxt, usernameEditTxt, pwdEditTxt, confirmPwdEditTxt;
-    private Button signUpBtn, loginBtn;
     private BBDDHelper bdHelper;
 
     @Override
@@ -34,12 +33,13 @@ public class SignUpActivity extends AppCompatActivity {
         pwdEditTxt = findViewById(R.id.regPwdEditTxt);
         confirmPwdEditTxt = findViewById(R.id.confirmPwdEditTxt);
 
-        loginBtn = findViewById(R.id.regLoginBtn);
+        Button loginBtn = findViewById(R.id.regLoginBtn);
         loginBtn.setOnClickListener(view -> {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         });
-        signUpBtn = findViewById(R.id.regSignUpBtn);
+
+        Button signUpBtn = findViewById(R.id.regSignUpBtn);
         signUpBtn.setOnClickListener(view -> {
             String username = usernameEditTxt.getText().toString();
             String email = emailEditTxt.getText().toString();
@@ -50,12 +50,20 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.rellena_campos, Toast.LENGTH_SHORT).show();
             }else{
                 if(pwd.equals(confPwd)){
-                    bdHelper.insertUser(username, pwd, email, new Date(Calendar.getInstance().getTime().getTime()));
-
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    intent.putExtra("username", username);
-                    startActivity(intent);
-                    finish();
+                    switch (bdHelper.insertUser(username, pwd, email, new java.sql.Date(Calendar.getInstance().getTime().getTime()))){
+                        case 0:
+                            Intent intent = new Intent(this, LoginActivity.class);
+                            intent.putExtra("username", username);
+                            startActivity(intent);
+                            finish();
+                            break;
+                        case 1:
+                            usernameEditTxt.setError(getString(R.string.username_error));
+                            break;
+                        case 2:
+                            emailEditTxt.setError(getString(R.string.email_error));
+                            break;
+                    }
                 }else{
                     pwdEditTxt.setText("");
                     confirmPwdEditTxt.setText("");

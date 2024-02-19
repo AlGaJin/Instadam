@@ -51,6 +51,9 @@ public class LoginActivity extends AppCompatActivity {
                     intent.putExtra("userId", userId);
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
+                }else{
+                    pwdEditTxt.setText("");
+                    pwdEditTxt.setError(getString(R.string.login_error));
                 }
             }
         });

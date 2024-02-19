@@ -52,7 +52,31 @@ public class BBDDHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public void insertUser(String username, String psswd, String email, Date date){
+    public int insertUser(String username, String psswd, String email, Date date){
+
+        Cursor cursor;
+
+        cursor = this.getReadableDatabase().query(
+                EstructuraBBDD.TABLE_USERS,
+                new String[]{EstructuraBBDD.COLUMN_USERNAME},
+                EstructuraBBDD.COLUMN_USERNAME + "=?",
+                new String[]{username},
+                null, null, null
+        );
+
+        if(cursor.moveToNext()) return 1; //Código de error: Nombre de usuario ya registrado
+
+
+        cursor = this.getReadableDatabase().query(
+                EstructuraBBDD.TABLE_USERS,
+                new String[]{EstructuraBBDD.COLUMN_EMAIL},
+                EstructuraBBDD.COLUMN_EMAIL + "=?",
+                new String[]{email},
+                null, null, null
+        );
+
+        if(cursor.moveToNext()) return 2; //Código de error: Email ya registrado
+
         ContentValues values = new ContentValues();
         values.put(EstructuraBBDD.COLUMN_USERNAME, username);
         values.put(EstructuraBBDD.COLUMN_PASSWORD, encrypt(psswd));
@@ -60,6 +84,7 @@ public class BBDDHelper extends SQLiteOpenHelper {
         values.put(EstructuraBBDD.COLUMN_CREATION_DATE, date.getTime());
 
         this.getWritableDatabase().insert(EstructuraBBDD.TABLE_USERS, null, values);
+        return 0; //No ha habido ningún error.
     }
 
     public Integer login_user(String[] selectionArgs){
@@ -76,7 +101,6 @@ public class BBDDHelper extends SQLiteOpenHelper {
 
         if(cursor.moveToNext()){
             int id = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
-            Log.d("BBDDHelper", "AQUI AQUI AQUI: " + cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_USERNAME)));
             return id;
         }
 
