@@ -100,8 +100,28 @@ public class BBDDHelper extends SQLiteOpenHelper {
         );
 
         if(cursor.moveToNext()){
-            int id = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
-            return id;
+            return cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
+        }
+
+        return null;
+    }
+
+    public User getUserById(String id){
+        Cursor cursor = this.getReadableDatabase().query(
+                EstructuraBBDD.TABLE_USERS,
+                EstructuraBBDD.login_projection,
+                EstructuraBBDD.COLUMN_ID + "=?",
+                new String[]{id},
+                null, null, null
+        );
+
+        if(cursor.moveToNext()){
+            String username = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_USERNAME));
+            String email = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_EMAIL));
+            String profilePic = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_PROFILE_PIC));
+            String dscp = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_DSCRIP));
+
+            return new User(Integer.parseInt(id), username, email, profilePic, dscp);
         }
 
         return null;

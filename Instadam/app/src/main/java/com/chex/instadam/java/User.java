@@ -4,7 +4,6 @@ public class User {
     private int id;
     private String username;
     private String email;
-    private String password;
     private String profilePic;
     private String dscp;
 
@@ -31,14 +30,6 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public int getId() {
         return id;
     }
@@ -61,5 +52,16 @@ public class User {
 
     public void setDscp(String dscp) {
         this.dscp = dscp;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", profilePic='" + profilePic + '\'' +
+                ", dscp='" + dscp + '\'' +
+                '}';
     }
 }

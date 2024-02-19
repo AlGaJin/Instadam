@@ -48,8 +48,8 @@ public class LoginActivity extends AppCompatActivity {
                 Integer userId = bdHelper.login_user(new String[]{name, name, pwd});
                 if(userId != null){
                     Intent intent = new Intent(this, MainActivity.class);
-                    intent.putExtra("userId", userId);
-                    startActivity(new Intent(this, MainActivity.class));
+                    intent.putExtra("userId", userId+"");
+                    startActivity(intent);
                     finish();
                 }else{
                     pwdEditTxt.setText("");

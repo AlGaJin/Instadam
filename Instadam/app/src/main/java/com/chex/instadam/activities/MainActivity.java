@@ -8,10 +8,12 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.chex.instadam.SQLite.BBDDHelper;
 import com.chex.instadam.fragments.ChatFragment;
 import com.chex.instadam.fragments.HomeFragment;
 import com.chex.instadam.R;
@@ -33,14 +35,17 @@ public class MainActivity extends AppCompatActivity {
     private boolean flag; // Boleano necesario para Back Stack casero
     private int menuRes; //Para cambiar el ActionBar según el fragmento que se muestre
     private User logedUser;
+    private BBDDHelper bdHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Recuperar el usuario que ha iniciado sesión
+        bdHelper = new BBDDHelper(getApplicationContext());
 
+        //Recuperar el usuario que ha iniciado sesión
+        logedUser = bdHelper.getUserById(getIntent().getStringExtra("userId"));
 
         // Inicialización y recuperación de las variables y vistas
         bttmNav = findViewById(R.id.bttmNavView);
