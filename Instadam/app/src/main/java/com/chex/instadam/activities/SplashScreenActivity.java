@@ -18,7 +18,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         new Handler().postDelayed(() -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         }, 1500);
     }

@@ -19,6 +19,7 @@ import com.chex.instadam.fragments.NotificationFragment;
 import com.chex.instadam.fragments.ProfileFragment;
 import com.chex.instadam.fragments.SearchFragment;
 import com.chex.instadam.fragments.SettingsFragment;
+import com.chex.instadam.java.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayDeque;
@@ -31,11 +32,15 @@ public class MainActivity extends AppCompatActivity {
     private Deque<Integer> idDeque; // Lista "estática" que tiene funciones de listas dinámicas (útil para Back Stack casero)
     private boolean flag; // Boleano necesario para Back Stack casero
     private int menuRes; //Para cambiar el ActionBar según el fragmento que se muestre
+    private User logedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Recuperar el usuario que ha iniciado sesión
+
 
         // Inicialización y recuperación de las variables y vistas
         bttmNav = findViewById(R.id.bttmNavView);

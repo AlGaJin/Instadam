@@ -11,16 +11,23 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.chex.instadam.R;
+import com.chex.instadam.SQLite.BBDDHelper;
+import com.chex.instadam.java.User;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText nameEditTxt, pwdEditTxt;
     private Button loginBtn, signupBtn;
+    private BBDDHelper bdHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        getSupportActionBar().hide();
+
+        bdHelper = new BBDDHelper(getApplicationContext());
 
         nameEditTxt = findViewById(R.id.loginNameEditTxt);
         String bundleUsername = getIntent().getStringExtra("username");
@@ -38,7 +45,10 @@ public class LoginActivity extends AppCompatActivity {
             if(name.isEmpty() || pwd.isEmpty()){
                 Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
             }else{
-                if(name.equals("admin") && pwd.equals("admin")){
+                Integer userId = bdHelper.login_user(new String[]{name, pwd});
+                if(userId != null){
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("userId", userId);
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
                 }

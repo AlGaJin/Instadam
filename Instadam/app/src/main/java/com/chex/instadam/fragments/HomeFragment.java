@@ -62,21 +62,4 @@ public class HomeFragment extends Fragment {
         rv.setAdapter(new HomeFeedAdapter(posts));
         return v;
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        SharedPreferences sP = PreferenceManager.getDefaultSharedPreferences(getContext());
-        SharedPreferences.Editor editor = sP.edit();
-        editor.putInt("homeScroll", ((LinearLayoutManager) rv.getLayoutManager()).findFirstCompletelyVisibleItemPosition());
-        editor.commit();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        SharedPreferences sP = PreferenceManager.getDefaultSharedPreferences(getContext());
-        rv.getLayoutManager().scrollToPosition(sP.getInt("homeScroll", 0));
-    }
 }

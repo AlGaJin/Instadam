@@ -9,16 +9,25 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.chex.instadam.R;
+import com.chex.instadam.SQLite.BBDDHelper;
+
+import java.sql.Date;
+import java.util.Calendar;
 
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText emailEditTxt, usernameEditTxt, pwdEditTxt, confirmPwdEditTxt;
     private Button signUpBtn, loginBtn;
+    private BBDDHelper bdHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        getSupportActionBar().hide();
+
+        bdHelper = new BBDDHelper(getApplicationContext());
 
         emailEditTxt = findViewById(R.id.regEmailEditTxt);
         usernameEditTxt = findViewById(R.id.regUsernameEditTxt);
@@ -41,6 +50,8 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.rellena_campos, Toast.LENGTH_SHORT).show();
             }else{
                 if(pwd.equals(confPwd)){
+                    bdHelper.insertUser(username, pwd, email, new Date(Calendar.getInstance().getTime().getTime()));
+
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.putExtra("username", username);
                     startActivity(intent);
