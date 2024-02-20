@@ -62,4 +62,10 @@ public class HomeFragment extends Fragment {
         rv.setAdapter(new HomeFeedAdapter(posts));
         return v;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).activarBtnNav();
+    }
 }

@@ -26,33 +26,26 @@
             android:text="@string/app_name"
             android:textSize="70sp" />
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/regEmailEditTxt"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10sp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/correo"
+            android:inputType="text"
+            android:minHeight="48dp" />
 
-            <EditText
-                android:id="@+id/regEmailEditTxt"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10sp"
-                android:ems="10"
-                android:hint="@string/correo"
-                android:inputType="text"
-                android:minHeight="48dp" />
-
-            <EditText
-                android:id="@+id/regUsernameEditTxt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="5sp"
-                android:ems="10"
-                android:hint="@string/nombre_de_usuario"
-                android:inputType="text"
-                android:minHeight="48dp" />
-        </LinearLayout>
+        <EditText
+            android:id="@+id/regUsernameEditTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/nombre_de_usuario"
+            android:inputType="text"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/regPwdEditTxt"
@@ -91,7 +84,7 @@
                 android:layout_height="1dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                app:dividerColor="#86000000" />
+                app:dividerColor="@color/primarioClaro" />
 
             <TextView
                 android:id="@+id/textView16"
@@ -100,6 +93,7 @@
                 android:layout_marginLeft="5sp"
                 android:layout_marginRight="5sp"
                 android:layout_weight="0"
+                android:textColor="@color/primarioClaro"
                 android:gravity="center"
                 android:text="@string/split_o" />
 
@@ -109,7 +103,7 @@
                 android:layout_height="1dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                app:dividerColor="#86000000" />
+                app:dividerColor="@color/primarioClaro" />
         </LinearLayout>
 
         <Button

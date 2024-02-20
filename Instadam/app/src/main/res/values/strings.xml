@@ -37,4 +37,5 @@
     <string name="login_error">Contraseña o usuario invalidos</string>
     <string name="username_error">Nombre de usuario no disponible</string>
     <string name="email_error">Correo electrónico ya registrado</string>
+    <string name="recuerdame">Recuérdame</string>
 </resources>

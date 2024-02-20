@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
@@ -27,9 +29,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chex.instadam.GridSpacingItemDecoration;
 import com.chex.instadam.R;
+import com.chex.instadam.SQLite.BBDDHelper;
 import com.chex.instadam.activities.MainActivity;
 import com.chex.instadam.enums.Type;
 import com.chex.instadam.java.Post;
+import com.chex.instadam.java.User;
 import com.chex.instadam.rv_adapter.ProfileFeedAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -37,12 +41,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
+    private final User logedUser = MainActivity.logedUser;
     private FloatingActionButton aniadirFab, animaliaFab, plantaeFab, fungiFab;
     private ImageButton fungiCatalogBtn, plantaeCatalogBtn, animaliaCatalogBtn;
     private View shadowBg;
     private boolean clicado;
     private RecyclerView rv;
     private List<Post> posts;
+    private TextView usernameTxtV, followedTxtV, followingTxtV, compendioTxtV;
+    private ImageView profilePicImgV;
+    private BBDDHelper bdHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +75,15 @@ public class ProfileFragment extends Fragment {
 
         ((MainActivity) getActivity()).desactivarBtnNav();
 
+        bdHelper = new BBDDHelper(getContext());
+
+        usernameTxtV = v.findViewById(R.id.fgt_profile_userameTxtView);
+        followedTxtV = v.findViewById(R.id.seguidosTxtV);
+        followingTxtV = v.findViewById(R.id.seguidoresTxtV);
+        profilePicImgV = v.findViewById(R.id.fgt_profile_userIImgV);
+
+        cargarDatosPersonales();
+
         posts = new ArrayList<>();
         posts.add(new Post(R.drawable.user_img_1, R.drawable.tyto_alba,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
         posts.add(new Post(R.drawable.user_img_1, R.drawable.hongo,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
@@ -83,7 +100,6 @@ public class ProfileFragment extends Fragment {
         rv.setLayoutManager(new GridLayoutManager(getContext(), 3));
         rv.addItemDecoration(new GridSpacingItemDecoration(3, 15, true));
         rv.setAdapter(new ProfileFeedAdapter(posts));
-
 
         shadowBg = v.findViewById(R.id.shadow_bg);
         shadowBg.setOnClickListener(view -> aniadirFabClicked());
@@ -105,11 +121,16 @@ public class ProfileFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                salir();
+                ((MainActivity) getActivity()).accionBack();
             }
         });
 
         return v;
+    }
+
+    private void cargarDatosPersonales() {
+        String username = logedUser.getUsername();
+        //String
     }
 
     //Método que le da animación al botón flotante
@@ -141,16 +162,9 @@ public class ProfileFragment extends Fragment {
         clicado = !clicado; //Cambia el booleano utilizado para saber si está clicado o no el fab principal
     }
 
-    //Método que permite salir del fragmento al MainActivity y mostrar de nuevo el Bottom Navigarion View
-    private void salir(){
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
-                .replace(R.id.frLyt, new HomeFragment()).commit();
-    }
-
     @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity) getActivity()).activarBtnNav();
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).desactivarBtnNav();
     }
 }

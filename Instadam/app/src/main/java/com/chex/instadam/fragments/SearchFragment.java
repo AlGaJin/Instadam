@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chex.instadam.R;
+import com.chex.instadam.activities.MainActivity;
 
 public class SearchFragment extends Fragment {
 
@@ -18,5 +19,11 @@ public class SearchFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).activarBtnNav();
     }
 }

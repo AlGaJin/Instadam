@@ -2,6 +2,7 @@ package com.chex.instadam.fragments;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -38,6 +39,19 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_settings, container, false);
         ((MainActivity) getActivity()).desactivarBtnNav();
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                ((MainActivity) getActivity()).accionBack();
+            }
+        });
+
         return v;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).desactivarBtnNav();
     }
 }

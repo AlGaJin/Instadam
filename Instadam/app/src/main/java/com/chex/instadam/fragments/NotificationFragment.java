@@ -58,21 +58,14 @@ public class NotificationFragment extends Fragment {
         ((MainActivity) getActivity()).desactivarBtnNav();
 
         //Cambiar la función del botón Back en el móvil
-        ((MainActivity) requireActivity()).getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                salir();
+                ((MainActivity) getActivity()).accionBack();
             }
         });
 
         return v;
-    }
-
-    //Método que permite salir del fragmento al MainActivity y mostrar de nuevo el Bottom Navigarion View
-    private void salir(){
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
-                .replace(R.id.frLyt, new HomeFragment()).commit();
     }
 
     @Override

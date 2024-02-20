@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chex.instadam.R;
+import com.chex.instadam.activities.MainActivity;
 import com.chex.instadam.java.Chat;
 import com.chex.instadam.java.Post;
 import com.chex.instadam.rv_adapter.ChatFeedAdapter;
@@ -38,5 +39,11 @@ public class ChatFragment extends Fragment {
         rv.setAdapter(new ChatFeedAdapter(chats));
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).activarBtnNav();
     }
 }

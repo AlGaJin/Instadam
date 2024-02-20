@@ -33,8 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bttmNav;
     private Deque<Integer> idDeque; // Lista "estática" que tiene funciones de listas dinámicas (útil para Back Stack casero)
     private boolean flag; // Boleano necesario para Back Stack casero
-    private int menuRes; //Para cambiar el ActionBar según el fragmento que se muestre
-    private User logedUser;
+    public static User logedUser;
     private BBDDHelper bdHelper;
 
     @Override
@@ -42,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Inicialización del gestor de la Base de datos local de SQLite
         bdHelper = new BBDDHelper(getApplicationContext());
 
         //Recuperar el usuario que ha iniciado sesión
@@ -205,13 +205,5 @@ public class MainActivity extends AppCompatActivity {
         cSet.connect(R.id.frLyt, ConstraintSet.BOTTOM, R.id.bttmNavView,ConstraintSet.TOP);
         cSet.applyTo(cLyt);
         bttmNav.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(bttmNav.getVisibility() == View.INVISIBLE){
-            activarBtnNav();
-        }
     }
 }

@@ -128,7 +128,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
-                                android:id="@+id/totalSeguidosTxtV"
+                                android:id="@+id/seguidosTxtV"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
@@ -152,7 +152,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
-                                android:id="@+id/totalSeguidoresTxtV"
+                                android:id="@+id/seguidoresTxtV"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
@@ -176,7 +176,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
-                                android:id="@+id/totalCompendioTxtV"
+                                android:id="@+id/compendioTxtV"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
