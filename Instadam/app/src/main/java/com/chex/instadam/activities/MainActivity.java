@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +17,7 @@ import com.chex.instadam.fragments.ChatFragment;
 import com.chex.instadam.fragments.HomeFragment;
 import com.chex.instadam.R;
 import com.chex.instadam.fragments.NotificationFragment;
-import com.chex.instadam.fragments.ProfileFragment;
+import com.chex.instadam.fragments.PersonalProfileFragment;
 import com.chex.instadam.fragments.SearchFragment;
 import com.chex.instadam.fragments.SettingsFragment;
 import com.chex.instadam.java.User;
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         }else if(id == R.id.settings_menu){
             return new SettingsFragment();
         }else if(id == R.id.profile_menu){
-            return new ProfileFragment();
+            return new PersonalProfileFragment();
         }else if(id == R.id.notificacion_menu){
             return new NotificationFragment();
         }
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         if(id == R.id.notificacion_menu){
             fr = new NotificationFragment();
         }else if(id == R.id.profile_menu){
-            fr = new ProfileFragment();
+            fr = new PersonalProfileFragment();
         }else if(id == R.id.settings_menu){
             fr = new SettingsFragment();
         }

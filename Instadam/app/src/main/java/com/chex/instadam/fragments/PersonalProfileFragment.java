@@ -7,8 +7,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,10 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import jp.wasabeef.glide.transformations.BlurTransformation;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.chex.instadam.GridSpacingItemDecoration;
 import com.chex.instadam.R;
 import com.chex.instadam.SQLite.BBDDHelper;
@@ -38,11 +32,10 @@ import com.chex.instadam.java.User;
 import com.chex.instadam.rv_adapter.ProfileFeedAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileFragment extends Fragment {
+public class PersonalProfileFragment extends Fragment {
     private final User logedUser = MainActivity.logedUser;
     private FloatingActionButton aniadirFab, animaliaFab, plantaeFab, fungiFab;
     private ImageButton fungiCatalogBtn, plantaeCatalogBtn, animaliaCatalogBtn;

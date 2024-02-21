@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -39,6 +40,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.mikhaellopez:circularimageview:4.3.1")
     implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation("com.google.firebase:firebase-analytics")
     testImplementation("junit:junit:4.13.2")
     implementation("androidx.preference:preference:1.2.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
