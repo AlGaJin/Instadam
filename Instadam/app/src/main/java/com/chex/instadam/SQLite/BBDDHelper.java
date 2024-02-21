@@ -52,11 +52,8 @@ public class BBDDHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public int insertUser(String username, String psswd, String email, Date date){
-
-        Cursor cursor;
-
-        cursor = this.getReadableDatabase().query(
+    public boolean isUsernameAvailable(String username){
+        Cursor cursor = this.getReadableDatabase().query(
                 EstructuraBBDD.TABLE_USERS,
                 new String[]{EstructuraBBDD.COLUMN_USERNAME},
                 EstructuraBBDD.COLUMN_USERNAME + "=?",
@@ -64,10 +61,11 @@ public class BBDDHelper extends SQLiteOpenHelper {
                 null, null, null
         );
 
-        if(cursor.moveToNext()) return 1; //Código de error: Nombre de usuario ya registrado
+        return !cursor.moveToNext();
+    }
 
-
-        cursor = this.getReadableDatabase().query(
+    public boolean isEmailAvailable(String email){
+        Cursor cursor = this.getReadableDatabase().query(
                 EstructuraBBDD.TABLE_USERS,
                 new String[]{EstructuraBBDD.COLUMN_EMAIL},
                 EstructuraBBDD.COLUMN_EMAIL + "=?",
@@ -75,7 +73,12 @@ public class BBDDHelper extends SQLiteOpenHelper {
                 null, null, null
         );
 
-        if(cursor.moveToNext()) return 2; //Código de error: Email ya registrado
+        return !cursor.moveToNext();
+    }
+
+    public int insertUser(String username, String psswd, String email, Date date){
+        if(!isUsernameAvailable(username)) return 1; //Código de error: Nombre de usuario ya registrado
+        if(!isEmailAvailable(email)) return 2; //Código de error: Email ya registrado
 
         ContentValues values = new ContentValues();
         values.put(EstructuraBBDD.COLUMN_USERNAME, username);
@@ -124,6 +127,39 @@ public class BBDDHelper extends SQLiteOpenHelper {
             return new User(Integer.parseInt(id), username, email, profilePic, dscp);
         }
 
+        return null;
+    }
+
+    public String getNumberUserFollowed(int id) {
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+          "SELECT COUNT(*) FROM " + EstructuraBBDD.TABLE_FOLLOWERS +
+          " WHERE " + EstructuraBBDD.COLUMN_ID_FOLLOWING + "=?",
+          new String[]{id+""}
+        );
+
+        if(cursor.moveToNext()) return cursor.getString(0);
+        return null;
+    }
+
+    public String getNumberUserFollowing(int id) {
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT COUNT(*) FROM " + EstructuraBBDD.TABLE_FOLLOWERS +
+                        " WHERE " + EstructuraBBDD.COLUMN_ID_FOLLOWED + "=?",
+                new String[]{id+""}
+        );
+
+        if(cursor.moveToNext()) return cursor.getString(0);
+        return null;
+    }
+
+    public String getNumberUserCompendium(int id) {
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT COUNT(*) FROM " + EstructuraBBDD.TABLE_POSTS +
+                        " WHERE " + EstructuraBBDD.COLUMN_ID_USER + "=?",
+                new String[]{id+""}
+        );
+
+        if(cursor.moveToNext()) return cursor.getString(0);
         return null;
     }
 }

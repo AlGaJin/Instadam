@@ -1,5 +1,6 @@
 package com.chex.instadam.fragments;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -37,6 +38,7 @@ import com.chex.instadam.java.User;
 import com.chex.instadam.rv_adapter.ProfileFeedAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class ProfileFragment extends Fragment {
     private boolean clicado;
     private RecyclerView rv;
     private List<Post> posts;
-    private TextView usernameTxtV, followedTxtV, followingTxtV, compendioTxtV;
+    private TextView usernameTxtV, followedTxtV, followingTxtV, compendioTxtV, dscpTxtV;
     private ImageView profilePicImgV;
     private BBDDHelper bdHelper;
 
@@ -81,6 +83,8 @@ public class ProfileFragment extends Fragment {
         followedTxtV = v.findViewById(R.id.seguidosTxtV);
         followingTxtV = v.findViewById(R.id.seguidoresTxtV);
         profilePicImgV = v.findViewById(R.id.fgt_profile_userIImgV);
+        compendioTxtV = v.findViewById(R.id.compendioTxtV);
+        dscpTxtV = v.findViewById(R.id.dscpTxtV);
 
         cargarDatosPersonales();
 
@@ -130,7 +134,18 @@ public class ProfileFragment extends Fragment {
 
     private void cargarDatosPersonales() {
         String username = logedUser.getUsername();
-        //String
+        String imgUrl = logedUser.getProfilePic();
+        String followed = bdHelper.getNumberUserFollowed(logedUser.getId());
+        String following = bdHelper.getNumberUserFollowing(logedUser.getId());
+        String compendium = bdHelper.getNumberUserCompendium(logedUser.getId());
+        String dsc = logedUser.getDscp();
+
+        usernameTxtV.setText(username);
+        if(imgUrl != null) profilePicImgV.setImageURI(Uri.parse(imgUrl));
+        followedTxtV.setText(followed);
+        followingTxtV.setText(following);
+        compendioTxtV.setText(compendium);
+        if(dsc != null) dscpTxtV.setText(dsc);
     }
 
     //Método que le da animación al botón flotante
