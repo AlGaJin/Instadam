@@ -46,4 +46,11 @@
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="guardar_cambios">Guardar cambios</string>
     <string name="rellena_todos_los_campos">Rellena todos los campos</string>
+    <string name="email_regex">No es un formato de correo válido</string>
+    <string name="buscar_usuario">Buscar usuario</string>
+    <string name="seguir">Seguir</string>
+    <string name="siguiendo">Siguiendo</string>
+    <string name="firebase_error_upload">No se ha podido subir la imagen a la nube</string>
+    <string name="firebase_success_upload">Imagen publicada correctamente</string>
+    <string name="cambios_guardados">Cambios guardados</string>
 </resources>

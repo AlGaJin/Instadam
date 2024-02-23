@@ -15,31 +15,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Buscar"
-            android:inputType="text" />
+            android:inputType="text"
+            android:drawableStart="@drawable/search"
+            android:hint="@string/buscar_usuario"/>
 
-        <TextView
-            android:id="@+id/textView4"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_rv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Resultado 1" />
+            android:layout_height="match_parent" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Resultado 2" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Resultado 3" />
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Resultado 4" />
     </LinearLayout>
 </FrameLayout>

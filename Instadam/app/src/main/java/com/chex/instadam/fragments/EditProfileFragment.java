@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,7 +113,11 @@ public class EditProfileFragment extends Fragment {
         }
 
         if(!email.isEmpty() && !email.equals(logedUser.getEmail())){
-            clonedUser.setEmail(email);
+            if(Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                clonedUser.setEmail(email);
+            }else{
+                emailEditTxt.setError(getResources().getString(R.string.email_error));
+            }
         }
 
         if(!dsc.isEmpty() && !dsc.equals(logedUser.getDscp())){
@@ -123,7 +128,7 @@ public class EditProfileFragment extends Fragment {
             case 0:
                 MainActivity.logedUser = clonedUser;
                 ((MainActivity)getActivity()).accionBack();
-                Toast.makeText(getContext(), "Cambios guardados", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.cambios_guardados), Toast.LENGTH_SHORT).show();
                 onDestroy();
                 break;
             case 1:
@@ -148,14 +153,14 @@ public class EditProfileFragment extends Fragment {
         byte[] data = baos.toByteArray();
 
         UploadTask uploadTask = profPicRef.putBytes(data);
-        uploadTask.addOnFailureListener(e -> Toast.makeText(getContext(), "No se ha podido subir la imagen a la nube", Toast.LENGTH_SHORT).show());
+        uploadTask.addOnFailureListener(e -> Toast.makeText(getContext(), getResources().getString(R.string.firebase_error_upload), Toast.LENGTH_SHORT).show());
         uploadTask.addOnSuccessListener(e ->{
             if(clonedUser.getProfilePic() != null && !clonedUser.getProfilePic().isEmpty()){
                 StorageReference oldProfPicRef = stRef.child(clonedUser.getProfilePic());
                 oldProfPicRef.delete();
             }
             clonedUser.setProfilePic(profilePicPath);
-            Toast.makeText(getContext(), "Imagen publicada correctamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getResources().getString(R.string.firebase_success_upload), Toast.LENGTH_SHORT).show();
         });
     }
 

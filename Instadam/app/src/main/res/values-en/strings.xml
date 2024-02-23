@@ -46,4 +46,11 @@
     <string name="cerrar_sesion">Log out</string>
     <string name="guardar_cambios">Save changes</string>
     <string name="rellena_todos_los_campos">Fill all the fields</string>
+    <string name="email_regex">Invalid email format</string>
+    <string name="buscar_usuario">Search user</string>
+    <string name="seguir">Follow</string>
+    <string name="siguiendo">Following</string>
+    <string name="firebase_error_upload">The image could not be uploaded to the cloud</string>
+    <string name="firebase_success_upload">Image posted successfully</string>
+    <string name="cambios_guardados">Changes saved</string>
 </resources>

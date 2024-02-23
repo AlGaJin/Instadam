@@ -12,6 +12,8 @@ import com.chex.instadam.java.User;
 
 import java.security.MessageDigest;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBDDHelper extends SQLiteOpenHelper {
 
@@ -184,5 +186,40 @@ public class BBDDHelper extends SQLiteOpenHelper {
                 );
 
         return 0;
+    }
+
+    public List<User> getAllUsers(User logedUser){
+        List<User> allUsers = new ArrayList<>();
+        Cursor cursor = this.getReadableDatabase().rawQuery("SELECT * FROM " + EstructuraBBDD.TABLE_USERS + " WHERE " + EstructuraBBDD.COLUMN_ID + " <>?", new String[]{logedUser.getId()+""});
+        while (cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
+            String username = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_USERNAME));
+            String profilePic = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_PROFILE_PIC));
+            allUsers.add(new User(id, username, null, profilePic, null));
+        }
+        return allUsers;
+    }
+
+    public boolean isFollowing(User follower, User followed) {
+        Cursor cursor = this.getReadableDatabase().rawQuery("SELECT * FROM " + EstructuraBBDD.TABLE_FOLLOWERS +
+                " WHERE " + EstructuraBBDD.COLUMN_ID_FOLLOWING + " =? AND "
+                + EstructuraBBDD.COLUMN_ID_FOLLOWED + "=?",
+                new String[]{follower.getId()+"", followed.getId()+""});
+        return cursor.moveToNext();
+    }
+
+    public void changeFollow(User follower, User followed) {
+        if(isFollowing(follower, followed)){
+            this.getWritableDatabase().delete(EstructuraBBDD.TABLE_FOLLOWERS,
+                    EstructuraBBDD.COLUMN_ID_FOLLOWING + "=? AND "
+                            + EstructuraBBDD.COLUMN_ID_FOLLOWED + "=?",
+                    new String[]{follower.getId()+"", followed.getId()+""});
+        }else{
+            ContentValues values = new ContentValues();
+            values.put(EstructuraBBDD.COLUMN_ID_FOLLOWING, follower.getId());
+            values.put(EstructuraBBDD.COLUMN_ID_FOLLOWED, followed.getId());
+
+            this.getWritableDatabase().insert(EstructuraBBDD.TABLE_FOLLOWERS, null, values);
+        }
     }
 }
