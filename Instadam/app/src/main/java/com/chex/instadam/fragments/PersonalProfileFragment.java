@@ -1,5 +1,7 @@
 package com.chex.instadam.fragments;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +28,7 @@ import android.widget.Toast;
 import com.chex.instadam.GridSpacingItemDecoration;
 import com.chex.instadam.R;
 import com.chex.instadam.SQLite.BBDDHelper;
+import com.chex.instadam.activities.LoginActivity;
 import com.chex.instadam.activities.MainActivity;
 import com.chex.instadam.enums.Type;
 import com.chex.instadam.java.Post;
@@ -38,7 +42,6 @@ import java.util.List;
 public class PersonalProfileFragment extends Fragment {
     private final User logedUser = MainActivity.logedUser;
     private FloatingActionButton aniadirFab, animaliaFab, plantaeFab, fungiFab;
-    private ImageButton fungiCatalogBtn, plantaeCatalogBtn, animaliaCatalogBtn;
     private View shadowBg;
     private boolean clicado;
     private RecyclerView rv;
@@ -114,6 +117,14 @@ public class PersonalProfileFragment extends Fragment {
         fungiFab = v.findViewById(R.id.fungiFab);
         fungiFab.setOnClickListener(view -> Toast.makeText(this.getContext(), "Añadir hongo", Toast.LENGTH_SHORT).show());
 
+        //Acción para el botón que permite editar los datos del perfil
+        v.findViewById(R.id.editProfileBtn).setOnClickListener(view -> {
+            ((MainActivity) getActivity()).editarPerfil();
+        });
+
+        //Acción para el botón que cierra la sesión
+        v.findViewById(R.id.logoutBtn).setOnClickListener(view -> logOut());
+
         //Cambiar la función del botón Back en el móvil
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
@@ -125,6 +136,22 @@ public class PersonalProfileFragment extends Fragment {
         return v;
     }
 
+    /**
+     * Cierra la sesión que está iniciada
+     */
+    public void logOut(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("userId", "");
+        editor.apply();
+
+        startActivity(new Intent(this.getContext(), LoginActivity.class));
+        requireActivity().finish();
+    }
+
+    /**
+     * Carga los datos del usuario en la vista
+     */
     private void cargarDatosPersonales() {
         String username = logedUser.getUsername();
         String imgUrl = logedUser.getProfilePic();
@@ -141,7 +168,9 @@ public class PersonalProfileFragment extends Fragment {
         if(dsc != null) dscpTxtV.setText(dsc);
     }
 
-    //Método que le da animación al botón flotante
+    /**
+     * Anima el botón flotante
+     */
     private void aniadirFabClicked() {
         if(!clicado){ //Cambia la visibilidad de los otros botones flotantes según si está o no clicado el fab principal
             animaliaFab.setVisibility(View.VISIBLE);
@@ -170,6 +199,9 @@ public class PersonalProfileFragment extends Fragment {
         clicado = !clicado; //Cambia el booleano utilizado para saber si está clicado o no el fab principal
     }
 
+    /**
+     * Desactiva el Bottom Navigation Bar si se continuara la aplicación en este fragmento
+     */
     @Override
     public void onResume() {
         super.onResume();

@@ -39,4 +39,11 @@
     <string name="email_error">This email is not available</string>
     <string name="recuerdame">Remember me</string>
     <string name="descripcion">Description</string>
+    <string name="cambiar_foto_de_perfil">Change your profile picture</string>
+    <string name="cambiar_nombre_de_usuario">Change your username</string>
+    <string name="cambiar_email">Change your email</string>
+    <string name="descripcion_hint">Talk about you!</string>
+    <string name="cerrar_sesion">Log out</string>
+    <string name="guardar_cambios">Save changes</string>
+    <string name="rellena_todos_los_campos">Fill all the fields</string>
 </resources>

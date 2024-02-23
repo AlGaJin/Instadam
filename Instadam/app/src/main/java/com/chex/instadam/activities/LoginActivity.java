@@ -4,20 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 
+import androidx.preference.PreferenceManager;
 import com.chex.instadam.R;
 import com.chex.instadam.SQLite.BBDDHelper;
-import com.chex.instadam.java.User;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText nameEditTxt, pwdEditTxt;
-    private Button loginBtn, signupBtn;
+    private CheckBox rememberMe;
+    private SharedPreferences preferences;
     private BBDDHelper bdHelper;
 
     @Override
@@ -25,44 +25,79 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        getSupportActionBar().hide();
+        getSupportActionBar().hide(); // Oculta el ActionBar
 
+        //Instanciación del SharedPreferences
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String userId = preferences.getString("userId", ""); //Recupero el id del usuario que se almacena en la clave userId
+        if(!userId.trim().isEmpty()){ //Compruebo que no esté vacío y cargo el Main con el id del usuario guardado
+            toMainActivity(userId);
+        }
+
+        //Intanciación del CheckBox que se usará al iniciar sesión para saber si se quiere mantener la sesión iniciada
+        rememberMe = findViewById(R.id.rememberCheckBox);
+
+        //Instanciación de la base de datos para comprobar el inicio de sesión
         bdHelper = new BBDDHelper(getApplicationContext());
 
+        //Instanciación de los EditText nombre y contraseña
         nameEditTxt = findViewById(R.id.loginNameEditTxt);
+        pwdEditTxt = findViewById(R.id.loginPasswordEditTxt);
+
+        //Si se viene del registro, se introducirá el nombre de usuario automáticamente
         String bundleUsername = getIntent().getStringExtra("username");
         if( bundleUsername != null){
             nameEditTxt.setText(bundleUsername);
         }
 
-        pwdEditTxt = findViewById(R.id.loginPasswordEditTxt);
+        //Acción para iniciar sesión con el botón de login
+        findViewById(R.id.loginBtn).setOnClickListener(view -> login());
 
-        loginBtn = findViewById(R.id.loginBtn);
-        loginBtn.setOnClickListener(view -> {
-            String name = nameEditTxt.getText().toString();
-            String pwd = pwdEditTxt.getText().toString();
-
-            if(name.isEmpty() || pwd.isEmpty()){
-                Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
-            }else{
-                Integer userId = bdHelper.login_user(new String[]{name, name, pwd});
-                if(userId != null){
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.putExtra("userId", userId+"");
-                    startActivity(intent);
-                    finish();
-                }else{
-                    pwdEditTxt.setText("");
-                    pwdEditTxt.setError(getString(R.string.login_error));
-                }
-            }
-        });
-
-        signupBtn = findViewById(R.id.signUpBtn);
-        signupBtn.setOnClickListener(view -> {
+        //Acción para cambiar al Activity de registro con el botón SignUp
+        findViewById(R.id.signUpBtn).setOnClickListener(view -> {
             startActivity(new Intent(this, SignUpActivity.class));
             finish();
         });
 
+    }
+
+    /**
+     * Lanza el MainActivity y cierra este
+     * @param userId Id del usuario que inicia sesión
+     */
+    public void toMainActivity(String userId){
+        Intent intent = new Intent(this, MainActivity.class); //Se inicia la actividad
+        intent.putExtra("userId", userId);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Comprueba los EditText y si están rellenos correctamente inicia sesión,
+     * lanzando el MainActivity
+     */
+    public void login(){
+        //Recolección de lo escrito en los campos
+        String name = nameEditTxt.getText().toString();
+        String pwd = pwdEditTxt.getText().toString();
+
+        if(name.isEmpty() || pwd.isEmpty()){
+            Toast.makeText(this, getString(R.string.rellena_todos_los_campos), Toast.LENGTH_SHORT).show();
+        }else{
+            Integer userId = bdHelper.login_user(new String[]{name, name, pwd}); //Con el nombre de usuario/email y contraseñas correctos, se obtiene el id del usuario
+            if(userId != null){
+                if(rememberMe.isChecked()){ //Si se ha activado el CheckBox
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("userId", userId+""); //Se almacena el id del usuario en el SharedPreferences
+                    editor.apply();
+                }
+
+                toMainActivity(userId.toString());
+            }else{
+                pwdEditTxt.setText("");
+                pwdEditTxt.setError(getString(R.string.login_error));
+            }
+        }
     }
 }

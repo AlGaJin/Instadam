@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.chex.instadam.SQLite.BBDDHelper;
 import com.chex.instadam.fragments.ChatFragment;
+import com.chex.instadam.fragments.EditProfileFragment;
 import com.chex.instadam.fragments.HomeFragment;
 import com.chex.instadam.R;
 import com.chex.instadam.fragments.NotificationFragment;
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
             return new PersonalProfileFragment();
         }else if(id == R.id.notificacion_menu){
             return new NotificationFragment();
+        }else if(id == R.id.editProfileBtn){
+            return new EditProfileFragment();
         }
         bttmNav.getMenu().getItem(0).setChecked(true);
         return new HomeFragment();
@@ -177,6 +180,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Muestra el fragmento de editar el perfil
+     */
+    public void editarPerfil(){
+        addDeque(R.id.editProfileBtn);
+        getSupportFragmentManager()
+                .beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                .addToBackStack(null)
+                .replace(R.id.frLyt, new EditProfileFragment()).commit();
     }
 
     /**
