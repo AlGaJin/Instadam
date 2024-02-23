@@ -49,26 +49,32 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
 
+        //Instanciación del ayudante de la base de datos local
         bdHelper = new BBDDHelper(getContext());
 
+        //Instanciación e lanzamiento del recycler view que mostará a todos los usuarios registrados en la aplicación
         rv = v.findViewById(R.id.search_rv);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new SearchFeedAdapter(bdHelper.getAllUsers(MainActivity.logedUser)));
 
+        //Recuperación del Edit Text que permitirá hacer búsquedas
         searchEditTxt = v.findViewById(R.id.searchEditTxt);
+        //Se le añade un listener que espera a que se cambie el texto, permite la busqueda dinámica (sin pulser enter)
         searchEditTxt.addTextChangedListener(new TextWatcher() {
+            //Estos dos métodos son obligatorios de implementar, sin embargo no son necsarios
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
+            //Con el uso del dbHelper, se hacen busquedas dinámicas
             @Override
             public void afterTextChanged(Editable editable) {
-                if(searchEditTxt.getText().toString().isEmpty()) {
+                String filter = searchEditTxt.getText().toString().trim();
+                if(filter.isEmpty()) { //Si no hay nada en el editText se muestran todos los usuarios
                     rv.setAdapter(new SearchFeedAdapter(bdHelper.getAllUsers(MainActivity.logedUser)));
-                }else{
-                    rv.setAdapter(new SearchFeedAdapter(bdHelper.getFilteredUsers(MainActivity.logedUser, searchEditTxt.getText().toString().trim())));
+                }else{ //Si hay algo escrito se llama a la base de datos con el filtro
+                    rv.setAdapter(new SearchFeedAdapter(bdHelper.getFilteredUsers(MainActivity.logedUser, filter)));
                 }
             }
         });
