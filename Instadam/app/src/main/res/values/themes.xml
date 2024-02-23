@@ -1,7 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.Instadam" parent="Theme.MaterialComponents.DayNight">
-        <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/primarioClaro</item>
         <item name="colorPrimaryDark">@color/acentoOscuro</item>
         <item name="colorAccent">@color/acentoClaro</item>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.Editable;
 import android.util.Log;
 
 import com.chex.instadam.activities.MainActivity;
@@ -221,5 +222,21 @@ public class BBDDHelper extends SQLiteOpenHelper {
 
             this.getWritableDatabase().insert(EstructuraBBDD.TABLE_FOLLOWERS, null, values);
         }
+    }
+
+    public List<User> getFilteredUsers(User logedUser, String filter) {
+        List<User> filteredUsers = new ArrayList<>();
+        Cursor cursor = this.getReadableDatabase().rawQuery("SELECT * FROM " + EstructuraBBDD.TABLE_USERS +
+                " WHERE " + EstructuraBBDD.COLUMN_ID + " <>? AND " +
+                EstructuraBBDD.COLUMN_USERNAME + " like ?",
+                new String[]{logedUser.getId()+"", filter+"%"});
+
+        while (cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
+            String username = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_USERNAME));
+            String profilePic = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_PROFILE_PIC));
+            filteredUsers.add(new User(id, username, null, profilePic, null));
+        }
+        return filteredUsers;
     }
 }
