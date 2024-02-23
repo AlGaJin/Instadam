@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.chex.instadam.activities.MainActivity;
 import com.chex.instadam.java.User;
 
 import java.security.MessageDigest;
@@ -161,5 +162,27 @@ public class BBDDHelper extends SQLiteOpenHelper {
 
         if(cursor.moveToNext()) return cursor.getString(0);
         return null;
+    }
+
+    public int editUser(User user) {
+        ContentValues values = new ContentValues();
+        User logedUser = MainActivity.logedUser;
+
+        if(!logedUser.getUsername().equals(user.getUsername()) && !isUsernameAvailable(user.getUsername())) return 1;
+        if (!logedUser.getEmail().equals(user.getEmail()) && !isEmailAvailable(user.getEmail())) return 2;
+
+        values.put(EstructuraBBDD.COLUMN_USERNAME, user.getUsername());
+        values.put(EstructuraBBDD.COLUMN_EMAIL, user.getEmail());
+        values.put(EstructuraBBDD.COLUMN_DSCRIP, user.getDscp());
+        values.put(EstructuraBBDD.COLUMN_PROFILE_PIC, user.getProfilePic());
+
+        this.getReadableDatabase()
+                .update(EstructuraBBDD.TABLE_USERS,
+                        values,
+                        EstructuraBBDD.COLUMN_ID+"=?",
+                        new String[]{user.getId()+""}
+                );
+
+        return 0;
     }
 }

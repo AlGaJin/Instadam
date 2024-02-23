@@ -2,6 +2,8 @@ package com.chex.instadam.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -34,7 +36,10 @@ import com.chex.instadam.enums.Type;
 import com.chex.instadam.java.Post;
 import com.chex.instadam.java.User;
 import com.chex.instadam.rv_adapter.ProfileFeedAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +54,8 @@ public class PersonalProfileFragment extends Fragment {
     private TextView usernameTxtV, followedTxtV, followingTxtV, compendioTxtV, dscpTxtV;
     private ImageView profilePicImgV;
     private BBDDHelper bdHelper;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference stRef = storage.getReference();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,7 +85,7 @@ public class PersonalProfileFragment extends Fragment {
         usernameTxtV = v.findViewById(R.id.fgt_profile_userameTxtView);
         followedTxtV = v.findViewById(R.id.seguidosTxtV);
         followingTxtV = v.findViewById(R.id.seguidoresTxtV);
-        profilePicImgV = v.findViewById(R.id.fgt_profile_userIImgV);
+        profilePicImgV = v.findViewById(R.id.fgt_profile_userImgV);
         compendioTxtV = v.findViewById(R.id.compendioTxtV);
         dscpTxtV = v.findViewById(R.id.dscpTxtV);
 
@@ -161,7 +168,7 @@ public class PersonalProfileFragment extends Fragment {
         String dsc = logedUser.getDscp();
 
         usernameTxtV.setText(username);
-        if(imgUrl != null) profilePicImgV.setImageURI(Uri.parse(imgUrl));
+        ((MainActivity)getActivity()).cargarProfilePic(logedUser, profilePicImgV);
         followedTxtV.setText(followed);
         followingTxtV.setText(following);
         compendioTxtV.setText(compendium);

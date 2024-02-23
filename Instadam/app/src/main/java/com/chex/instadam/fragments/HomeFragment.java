@@ -20,6 +20,7 @@ import com.chex.instadam.activities.MainActivity;
 import com.chex.instadam.enums.Type;
 import com.chex.instadam.java.Post;
 import com.chex.instadam.R;
+import com.chex.instadam.java.User;
 import com.chex.instadam.rv_adapter.HomeFeedAdapter;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView rv;
     private List<Post> posts;
+    private final User logedUser = MainActivity.logedUser;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

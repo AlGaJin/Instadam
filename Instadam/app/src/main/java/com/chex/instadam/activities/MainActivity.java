@@ -2,15 +2,19 @@ package com.chex.instadam.activities;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.chex.instadam.SQLite.BBDDHelper;
 import com.chex.instadam.fragments.ChatFragment;
@@ -23,6 +27,8 @@ import com.chex.instadam.fragments.SearchFragment;
 import com.chex.instadam.fragments.SettingsFragment;
 import com.chex.instadam.java.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -35,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean flag; // Boleano necesario para Back Stack casero
     public static User logedUser;
     private BBDDHelper bdHelper;
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference stRef = storage.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,5 +226,18 @@ public class MainActivity extends AppCompatActivity {
         cSet.connect(R.id.frLyt, ConstraintSet.BOTTOM, R.id.bttmNavView,ConstraintSet.TOP);
         cSet.applyTo(cLyt);
         bttmNav.setVisibility(View.VISIBLE);
+    }
+
+    public void cargarProfilePic(User user, ImageView imgV) {
+        String image = "profilePics/DEFAULT.png";
+        if(user.getProfilePic() != null){
+            image = user.getProfilePic();
+        }
+        StorageReference imgRef = stRef.child(image);
+        final long EIGHT_MEGABYTE = 1024*1024*8;
+        imgRef.getBytes(EIGHT_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+            imgV.setImageBitmap(bitmap);
+        });
     }
 }

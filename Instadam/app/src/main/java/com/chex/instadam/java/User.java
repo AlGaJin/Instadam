@@ -54,6 +54,10 @@ public class User {
         this.dscp = dscp;
     }
 
+    public User clone(){
+        return new User(id, username, email, profilePic, dscp);
+    }
+
     @Override
     public String toString() {
         return "User{" +
