@@ -27,19 +27,21 @@ public class LoginActivity extends AppCompatActivity {
 
         getSupportActionBar().hide(); // Oculta el ActionBar
 
+        //Instanciación de la base de datos para comprobar el inicio de sesión
+        bdHelper = new BBDDHelper(getApplicationContext());
+
         //Instanciación del SharedPreferences
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String userId = preferences.getString("userId", ""); //Recupero el id del usuario que se almacena en la clave userId
-        if(!userId.trim().isEmpty()){ //Compruebo que no esté vacío y cargo el Main con el id del usuario guardado
+        //Compruebo que no esté vacío y que el usuario existe
+        // para así cargar en el Main el id del usuario
+        if(!userId.trim().isEmpty() && bdHelper.getUserById(userId) != null){
             toMainActivity(userId);
         }
 
         //Intanciación del CheckBox que se usará al iniciar sesión para saber si se quiere mantener la sesión iniciada
         rememberMe = findViewById(R.id.rememberCheckBox);
-
-        //Instanciación de la base de datos para comprobar el inicio de sesión
-        bdHelper = new BBDDHelper(getApplicationContext());
 
         //Instanciación de los EditText nombre y contraseña
         nameEditTxt = findViewById(R.id.loginNameEditTxt);

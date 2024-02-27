@@ -13,11 +13,6 @@
     <string name="compendio">Compendium</string>
     <string name="seguidores">Followers</string>
     <string name="seguidos">Following</string>
-    <string-array name="spinner_list">
-        <item>Filter</item>
-        <item>Not opened</item>
-        <item>Date</item>
-    </string-array>
     <string name="login_usarname_hint">Email or username</string>
     <string name="contrasenia">Password</string>
     <string name="split_o">Or</string>
@@ -53,4 +48,11 @@
     <string name="firebase_error_upload">The image could not be uploaded to the cloud</string>
     <string name="firebase_success_upload">Image posted successfully</string>
     <string name="cambios_guardados">Changes saved</string>
+    <string name="haz_selecciona_foto">Take or choose a picture toi publish</string>
+    <string name="escribir_titulo">Write a title</string>
+    <string name="input_nombre_cientifico">Which is it scientific name?</string>
+    <string name="input_nombre_comun">Which is it common name?</string>
+    <string name="post_descripcion">Want to write something more?</string>
+    <string name="publicar">Post</string>
+    <string name="title_error">Write a title</string>
 </resources>

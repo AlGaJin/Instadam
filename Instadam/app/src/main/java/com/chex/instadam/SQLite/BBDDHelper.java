@@ -5,10 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.Editable;
-import android.util.Log;
 
 import com.chex.instadam.activities.MainActivity;
+import com.chex.instadam.enums.PostTypes;
+import com.chex.instadam.java.Post;
 import com.chex.instadam.java.User;
 
 import java.security.MessageDigest;
@@ -30,6 +30,7 @@ public class BBDDHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(EstructuraBBDD.SQL_CREATE_TABLE_CHATS);
         sqLiteDatabase.execSQL(EstructuraBBDD.SQL_CREATE_TABLE_MESSAGES);
         sqLiteDatabase.execSQL(EstructuraBBDD.SQL_CREATE_TABLE_POSTS);
+        sqLiteDatabase.execSQL(EstructuraBBDD.SQL_CREATE_TABLE_LIKED_POSTS);
         sqLiteDatabase.execSQL(EstructuraBBDD.SQL_CREATE_TABLE_COMMENTS);
     }
 
@@ -56,7 +57,7 @@ public class BBDDHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public boolean isUsernameAvailable(String username){
+    public boolean isUsernameRegistered(String username){
         Cursor cursor = this.getReadableDatabase().query(
                 EstructuraBBDD.TABLE_USERS,
                 new String[]{EstructuraBBDD.COLUMN_USERNAME},
@@ -65,10 +66,10 @@ public class BBDDHelper extends SQLiteOpenHelper {
                 null, null, null
         );
 
-        return !cursor.moveToNext();
+        return cursor.moveToNext();
     }
 
-    public boolean isEmailAvailable(String email){
+    public boolean isEmailRegistered(String email){
         Cursor cursor = this.getReadableDatabase().query(
                 EstructuraBBDD.TABLE_USERS,
                 new String[]{EstructuraBBDD.COLUMN_EMAIL},
@@ -77,18 +78,19 @@ public class BBDDHelper extends SQLiteOpenHelper {
                 null, null, null
         );
 
-        return !cursor.moveToNext();
+        return cursor.moveToNext();
     }
 
-    public int insertUser(String username, String psswd, String email, Date date){
-        if(!isUsernameAvailable(username)) return 1; //Código de error: Nombre de usuario ya registrado
-        if(!isEmailAvailable(email)) return 2; //Código de error: Email ya registrado
+    public int insertUser(String username, String psswd, String email){
+        if(isUsernameRegistered(username)) return 1; //Código de error: Nombre de usuario ya registrado
+        if(isEmailRegistered(email)) return 2; //Código de error: Email ya registrado
 
         ContentValues values = new ContentValues();
         values.put(EstructuraBBDD.COLUMN_USERNAME, username);
         values.put(EstructuraBBDD.COLUMN_PASSWORD, encrypt(psswd));
+        values.put(EstructuraBBDD.COLUMN_PROFILE_PIC, "profilePics/DEFAULT.png");
         values.put(EstructuraBBDD.COLUMN_EMAIL, email);
-        values.put(EstructuraBBDD.COLUMN_CREATION_DATE, date.getTime());
+        values.put(EstructuraBBDD.COLUMN_CREATION_DATE, new Date(System.currentTimeMillis()).getTime());
 
         this.getWritableDatabase().insert(EstructuraBBDD.TABLE_USERS, null, values);
         return 0; //No ha habido ningún error.
@@ -171,8 +173,8 @@ public class BBDDHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         User logedUser = MainActivity.logedUser;
 
-        if(!logedUser.getUsername().equals(user.getUsername()) && !isUsernameAvailable(user.getUsername())) return 1;
-        if (!logedUser.getEmail().equals(user.getEmail()) && !isEmailAvailable(user.getEmail())) return 2;
+        if(!logedUser.getUsername().equals(user.getUsername()) && isUsernameRegistered(user.getUsername())) return 1;
+        if (!logedUser.getEmail().equals(user.getEmail()) && isEmailRegistered(user.getEmail())) return 2;
 
         values.put(EstructuraBBDD.COLUMN_USERNAME, user.getUsername());
         values.put(EstructuraBBDD.COLUMN_EMAIL, user.getEmail());
@@ -238,5 +240,170 @@ public class BBDDHelper extends SQLiteOpenHelper {
             filteredUsers.add(new User(id, username, null, profilePic, null));
         }
         return filteredUsers;
+    }
+
+    public void insertPost(String title, String sciName, String cmnName, String dsc, String type, User publisher, String fbPath){
+        ContentValues values = new ContentValues();
+        values.put(EstructuraBBDD.COLUMN_ID_USER, publisher.getId()+"");
+        values.put(EstructuraBBDD.COLUMN_PUBLISH_DATE, new Date(System.currentTimeMillis()).getTime());
+        values.put(EstructuraBBDD.COLUMN_TITLE, title);
+        values.put(EstructuraBBDD.COLUMN_DSCRIP, dsc);
+        values.put(EstructuraBBDD.COLUMN_SCIENTIFIC_NAME, sciName);
+        values.put(EstructuraBBDD.COLUMN_COMMON_NAME, cmnName);
+        values.put(EstructuraBBDD.COLUMN_FIREBASE_PATH, fbPath);
+
+        switch (type){
+            case "Fungi":
+                type = PostTypes.FNG.toString();
+                break;
+            case "Plantae":
+                type = PostTypes.PLT.toString();
+                break;
+            case "Animalia":
+                type = PostTypes.ANM.toString();
+                break;
+        }
+
+        values.put(EstructuraBBDD.COLUMN_TYPE, type);
+
+        this.getWritableDatabase().insert(EstructuraBBDD.TABLE_POSTS, null, values);
+    }
+
+    private Post createPost(Cursor postCursor){
+        int id = postCursor.getInt(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
+        int idPublisher = postCursor.getInt(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID_USER));
+        long publishDate = postCursor.getLong(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_PUBLISH_DATE));
+        String title = postCursor.getString(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_TITLE));
+        String dsc = postCursor.getString(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_DSCRIP));
+        String fbPostPath = postCursor.getString(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_FIREBASE_PATH));
+
+        PostTypes postType;
+        switch (postCursor.getString(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_TYPE))){
+            case EstructuraBBDD.ENUM_FUNGI:
+                postType = PostTypes.FNG;
+                break;
+            case EstructuraBBDD.ENUM_PLANTAE:
+                postType = PostTypes.PLT;
+                break;
+            case EstructuraBBDD.ENUM_ANIMALIA:
+                postType = PostTypes.ANM;
+                break;
+            default:
+                postType = null;
+                break;
+        }
+
+        String sciName = postCursor.getString(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_SCIENTIFIC_NAME));
+        String cmnName = postCursor.getString(postCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_COMMON_NAME));
+
+        return new Post(id, idPublisher, new Date(publishDate), title, dsc, postType, sciName, cmnName, fbPostPath);
+    }
+    public List<Post> getUserPosts(User user){
+        List<Post> posts = new ArrayList<>();
+        Cursor cursor = this.getWritableDatabase().rawQuery(
+                "SELECT * FROM " + EstructuraBBDD.TABLE_POSTS +
+                        " WHERE " + EstructuraBBDD.COLUMN_ID_USER + "=?",
+                        new String[]{user.getId()+""}
+        );
+
+        while (cursor.moveToNext()){
+            posts.add(createPost(cursor));
+        }
+
+        return posts;
+    }
+
+    public List<Post> getFollowedPosts(User logedUser) {
+        List<Post> posts = new ArrayList<>();
+        Cursor userCursor = this.getReadableDatabase().rawQuery(
+                "SELECT " + EstructuraBBDD.COLUMN_ID_FOLLOWED +
+                        " FROM " + EstructuraBBDD.TABLE_FOLLOWERS +
+                        " WHERE " + EstructuraBBDD.COLUMN_ID_FOLLOWING + "=?",
+                        new String[]{logedUser.getId()+""});
+
+        while (userCursor.moveToNext()){
+            Cursor postCursor = this.getReadableDatabase().rawQuery(
+                    "SELECT * FROM " + EstructuraBBDD.TABLE_POSTS +
+                            " WHERE " + EstructuraBBDD.COLUMN_ID_USER + "=?",
+                            new String[]{userCursor.getString(userCursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID_FOLLOWED))});
+            while (postCursor.moveToNext()) {
+                posts.add(createPost(postCursor));
+            }
+        }
+
+        return posts;
+    }
+
+    public Integer getTotalLikes(Post post){
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT COUNT(*) FROM " + EstructuraBBDD.TABLE_LIKED_POSTS +
+                " WHERE " + EstructuraBBDD.COLUMN_ID_POST + "=?",
+                new String[]{post.getId()+""}
+        );
+
+        if(cursor.moveToNext()){
+            return cursor.getInt(0);
+        }
+
+        return 0;
+    }
+
+    public boolean isLiked(User user, Post post){
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT * FROM " + EstructuraBBDD.TABLE_LIKED_POSTS +
+                    " WHERE " + EstructuraBBDD.COLUMN_ID_USER + "=? AND " +
+                    EstructuraBBDD.COLUMN_ID_POST + "=?",
+                new String[]{user.getId()+"", post.getId()+""}
+        );
+
+        return cursor.moveToNext();
+    }
+
+    public void changeLikedPost(User user, Post post) {
+        if(isLiked(user, post)){
+            this.getWritableDatabase().delete(EstructuraBBDD.TABLE_LIKED_POSTS,
+                    EstructuraBBDD.COLUMN_ID_USER + "=? AND "
+                            + EstructuraBBDD.COLUMN_ID_POST + "=?",
+                    new String[]{user.getId()+"", post.getId()+""});
+        }else{
+            ContentValues values = new ContentValues();
+            values.put(EstructuraBBDD.COLUMN_ID_USER, user.getId());
+            values.put(EstructuraBBDD.COLUMN_ID_POST, post.getId());
+
+            this.getWritableDatabase().insert(EstructuraBBDD.TABLE_LIKED_POSTS, null, values);
+        }
+    }
+
+    public List<Post> getPostsByType(String postType){
+        List<Post> postsByType = new ArrayList<>();
+
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT * FROM " + EstructuraBBDD.TABLE_POSTS +
+                    " WHERE " + EstructuraBBDD.COLUMN_TYPE + "=?",
+                new String[]{postType}
+        );
+
+        while (cursor.moveToNext()){
+            postsByType.add(createPost(cursor));
+        }
+
+        return postsByType;
+    }
+
+    public List<Post> getPostsByType(String postType, User user){
+        List<Post> postsByType = new ArrayList<>();
+
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT * FROM " + EstructuraBBDD.TABLE_POSTS +
+                    " WHERE " + EstructuraBBDD.COLUMN_TYPE + "=? AND " +
+                    EstructuraBBDD.COLUMN_ID_USER + "=?",
+                new String[]{postType, user.getId()+""}
+        );
+
+        while (cursor.moveToNext()){
+            postsByType.add(createPost(cursor));
+        }
+
+        return postsByType;
     }
 }

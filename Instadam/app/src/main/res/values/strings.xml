@@ -25,11 +25,6 @@
         <item>Español</item>
         <item>Inglés</item>
     </string-array>
-    <string-array name="spinner_list">
-        <item>Filtrar</item>
-        <item>No leídos</item>
-        <item>Fecha</item>
-    </string-array>
     <string name="error_pwd">Las contraseñas no coinciden</string>
     <string name="rellena_campos">Rellena todos los campos</string>
     <string name="editar_perfil">Editar perfil</string>
@@ -53,4 +48,16 @@
     <string name="firebase_error_upload">No se ha podido subir la imagen a la nube</string>
     <string name="firebase_success_upload">Imagen publicada correctamente</string>
     <string name="cambios_guardados">Cambios guardados</string>
+    <string name="haz_selecciona_foto">Haz o selecciona una foto para publicar</string>
+    <string name="escribir_titulo">Escribe un título</string>
+    <string name="input_nombre_cientifico">¿Cuál es su nombre científico?</string>
+    <string name="input_nombre_comun">¿Cuál es su nombre común?</string>
+    <string name="post_descripcion">¿Quiéres escribir algo más?</string>
+    <string name="publicar">Publicar</string>
+    <string-array name="post_type_list" translatable="false">
+        <item>Fungi</item>
+        <item>Plantae</item>
+        <item>Animalia</item>
+    </string-array>
+    <string name="title_error">Escribe un título</string>
 </resources>

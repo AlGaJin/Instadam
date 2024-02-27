@@ -2,9 +2,6 @@ package com.chex.instadam.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -22,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,16 +28,14 @@ import com.chex.instadam.R;
 import com.chex.instadam.SQLite.BBDDHelper;
 import com.chex.instadam.activities.LoginActivity;
 import com.chex.instadam.activities.MainActivity;
-import com.chex.instadam.enums.Type;
+import com.chex.instadam.enums.PostTypes;
 import com.chex.instadam.java.Post;
 import com.chex.instadam.java.User;
 import com.chex.instadam.rv_adapter.ProfileFeedAdapter;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PersonalProfileFragment extends Fragment {
@@ -91,17 +85,7 @@ public class PersonalProfileFragment extends Fragment {
 
         cargarDatosPersonales();
 
-        posts = new ArrayList<>();
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.tyto_alba,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.hongo,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.animalia_bg,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.fungi_bg,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.plantae_bg,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.tyto_alba,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.hongo,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.animalia_bg,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.fungi_bg,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.plantae_bg,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
+        posts = bdHelper.getUserPosts(logedUser);
 
         rv = v.findViewById(R.id.fgt_profile_rv);
         rv.setLayoutManager(new GridLayoutManager(getContext(), 3));
@@ -116,13 +100,13 @@ public class PersonalProfileFragment extends Fragment {
         aniadirFab.setOnClickListener(view -> aniadirFabClicked());
 
         animaliaFab = v.findViewById(R.id.animaliaFab);
-        animaliaFab.setOnClickListener(view -> Toast.makeText(this.getContext(), "Añadir animal", Toast.LENGTH_SHORT).show());
+        animaliaFab.setOnClickListener(view -> ((MainActivity)getActivity()).crearPublicacion(PostTypes.ANM));
 
         plantaeFab = v.findViewById(R.id.plantaeFab);
-        plantaeFab.setOnClickListener(view -> Toast.makeText(this.getContext(), "Añadir planta", Toast.LENGTH_SHORT).show());
+        plantaeFab.setOnClickListener(view -> ((MainActivity)getActivity()).crearPublicacion(PostTypes.PLT));
 
         fungiFab = v.findViewById(R.id.fungiFab);
-        fungiFab.setOnClickListener(view -> Toast.makeText(this.getContext(), "Añadir hongo", Toast.LENGTH_SHORT).show());
+        fungiFab.setOnClickListener(view -> ((MainActivity)getActivity()).crearPublicacion(PostTypes.FNG));
 
         //Acción para el botón que permite editar los datos del perfil
         v.findViewById(R.id.editProfileBtn).setOnClickListener(view -> {
@@ -147,7 +131,7 @@ public class PersonalProfileFragment extends Fragment {
      * Cierra la sesión que está iniciada
      */
     public void logOut(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("userId", "");
         editor.apply();
@@ -168,7 +152,7 @@ public class PersonalProfileFragment extends Fragment {
         String dsc = logedUser.getDscp();
 
         usernameTxtV.setText(username);
-        ((MainActivity)getActivity()).cargarProfilePic(logedUser, profilePicImgV);
+        ((MainActivity)getActivity()).cargarProfilePic(imgUrl, profilePicImgV);
         followedTxtV.setText(followed);
         followingTxtV.setText(following);
         compendioTxtV.setText(compendium);

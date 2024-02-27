@@ -2,7 +2,6 @@ package com.chex.instadam.activities;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -17,12 +16,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.chex.instadam.SQLite.BBDDHelper;
+import com.chex.instadam.enums.PostTypes;
 import com.chex.instadam.fragments.ChatFragment;
 import com.chex.instadam.fragments.EditProfileFragment;
 import com.chex.instadam.fragments.HomeFragment;
 import com.chex.instadam.R;
 import com.chex.instadam.fragments.NotificationFragment;
 import com.chex.instadam.fragments.PersonalProfileFragment;
+import com.chex.instadam.fragments.PostFragment;
 import com.chex.instadam.fragments.SearchFragment;
 import com.chex.instadam.fragments.SettingsFragment;
 import com.chex.instadam.java.User;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bttmNav;
     private Deque<Integer> idDeque; // Lista "estática" que tiene funciones de listas dinámicas (útil para Back Stack casero)
     private boolean flag; // Boleano necesario para Back Stack casero
-    public static User logedUser;
+    public static User logedUser; //Usuario que ha iniciado sesión, se necesitará en más zonas del código
     private BBDDHelper bdHelper;
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference stRef = storage.getReference();
@@ -79,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
         idDeque.addLast(R.id.home_menu);
     }
 
+    /**
+     * Añade un id a una cola de un tamaño máximo para crear un Back Stack de tamaño limitado
+     * @param id Id del item que se acciona
+     * @return El id recibido
+     */
     public int addDeque(int id){
         if(idDeque.contains(id)){
             if(id == R.id.home_menu && idDeque.size() != 1 && flag){ //Resumidamente: obliga a que el último fragmento que se muestra sea siempre el de inicio
@@ -91,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
         return id;
     }
 
+    /**
+     * Elimina el fragmento que se estaba mostrando y muestra el anterior que se había añadido
+     */
     public void accionBack(){
         idDeque.pop(); //Elimino el id del fragmento que se está mostrando
         if(!idDeque.isEmpty()){
@@ -123,7 +132,10 @@ public class MainActivity extends AppCompatActivity {
             return new NotificationFragment();
         }else if(id == R.id.editProfileBtn){
             return new EditProfileFragment();
+        }else if(id == R.id.aniadirFab){
+            return new PostFragment();
         }
+
         bttmNav.getMenu().getItem(0).setChecked(true);
         return new HomeFragment();
     }
@@ -164,11 +176,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //Acción para el ActionBar
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+        int id = item.getItemId(); //Recupera el id del MenuItem
         Fragment fr = null;
 
+        //Dependiendo del id se cargará un fragmento u otro
         if(id == R.id.notificacion_menu){
             fr = new NotificationFragment();
         }else if(id == R.id.profile_menu){
@@ -181,10 +195,9 @@ public class MainActivity extends AppCompatActivity {
             addDeque(id);
             getSupportFragmentManager()
                     .beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
-                    .addToBackStack(null)
                     .replace(R.id.frLyt, fr).commit();
         }else{
-            accionBack();
+            accionBack(); //Si no es ninguno de ellos, se entiende que es el item de retroceso
         }
 
         return super.onOptionsItemSelected(item);
@@ -197,8 +210,25 @@ public class MainActivity extends AppCompatActivity {
         addDeque(R.id.editProfileBtn);
         getSupportFragmentManager()
                 .beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
-                .addToBackStack(null)
                 .replace(R.id.frLyt, new EditProfileFragment()).commit();
+    }
+
+    /**
+     * Muestra el fragmento para crear una publicación
+     * @param type dependiendo del botón que haya accionado el método se pasará por bundle
+     *             un tipo u otro de post
+     */
+    public void crearPublicacion(PostTypes type){
+        addDeque(R.id.aniadirFab);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", type.toString());
+
+        PostFragment fgt = new PostFragment();
+        fgt.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                .replace(R.id.frLyt, fgt).commit();
     }
 
     /**
@@ -228,12 +258,13 @@ public class MainActivity extends AppCompatActivity {
         bttmNav.setVisibility(View.VISIBLE);
     }
 
-    public void cargarProfilePic(User user, ImageView imgV) {
-        String image = "profilePics/DEFAULT.png";
-        if(user.getProfilePic() != null){
-            image = user.getProfilePic();
-        }
-        StorageReference imgRef = stRef.child(image);
+    /**
+     * Recupera de FireBase una imagen de perfil publicado, sino se carga una imagen predeterminada
+     * @param imgPath Ruta donde se almacena la imagen en FireBase
+     * @param imgV El Imagen View sobre el que se va a cargar la imagen de FireBase
+     */
+    public void cargarProfilePic(String imgPath, ImageView imgV) {
+        StorageReference imgRef = stRef.child(imgPath);
         final long EIGHT_MEGABYTE = 1024*1024*8;
         imgRef.getBytes(EIGHT_MEGABYTE).addOnSuccessListener(bytes -> {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);

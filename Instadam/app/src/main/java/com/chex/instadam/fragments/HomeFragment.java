@@ -16,20 +16,19 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chex.instadam.SQLite.BBDDHelper;
 import com.chex.instadam.activities.MainActivity;
-import com.chex.instadam.enums.Type;
 import com.chex.instadam.java.Post;
 import com.chex.instadam.R;
 import com.chex.instadam.java.User;
 import com.chex.instadam.rv_adapter.HomeFeedAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private RecyclerView rv;
-    private List<Post> posts;
+    private BBDDHelper bdHelper;
     private final User logedUser = MainActivity.logedUser;
 
     @Override
@@ -53,11 +52,21 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
-        //Datos de prueba
-        posts = new ArrayList<>();
-        posts.add(new Post(R.drawable.user_img_1, R.drawable.tyto_alba,"Vicioso","Tyto alba", "Lechuza común", "Vuela", "14-05-23", Type.ANIMALIA));
-        posts.add(new Post(R.drawable.user_img_2, R.drawable.hongo,"Luisito","Amanita muscaria", "Champi", "Esto es una descripción de prueba", "02-03-23", Type.FUNGI));
-        posts.add(new Post(R.drawable.user_img_3, R.drawable.fungi_bg, "Carlos", "Arfali calidonie", "Peluca falsa", "", "04-02-23", Type.FUNGI));
+        bdHelper = new BBDDHelper(getContext());
+
+        //Crea la lista de publicaciones de los usuarios a los que sigue el usuario que ha iniciado sesión
+        List<Post> posts = bdHelper.getFollowedPosts(logedUser);
+        posts.sort((post1, post2) -> {
+            if(post1.getPublish_date().before(post2.getPublish_date())){
+                return 1;
+            }else if(post1.getPublish_date().after(post2.getPublish_date())){
+                return -1;
+            }else{
+                return 0;
+            }
+        });
+
+        //Recupera el Recycler View y lo carga con los posts que se han obtenido y ordenado anteriormente
         rv = v.findViewById(R.id.fgt_home_rv);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new HomeFeedAdapter(posts));

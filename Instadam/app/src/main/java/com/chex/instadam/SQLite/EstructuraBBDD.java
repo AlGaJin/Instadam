@@ -14,7 +14,7 @@ public class EstructuraBBDD {
 
 
     public static final String TABLE_NOTIFICATIONS = "notifications";
-    public static final String COLUMN_NOTIFY_TYPE = "notify_type";
+    public static final String COLUMN_TYPE = "type";
     public static final String ENUM_MSG = "MSG";
     public static final String ENUM_POST = "POST";
     public static final String ENUM_FOLLOWER = "FOLLOWER";
@@ -36,6 +36,12 @@ public class EstructuraBBDD {
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_SCIENTIFIC_NAME = "scientific_name";
     public static final String COLUMN_COMMON_NAME = "common_name";
+    public static final String ENUM_FUNGI = "FNG";
+    public static final String ENUM_PLANTAE = "PLT";
+    public static final String ENUM_ANIMALIA = "ANM";
+    public static final String COLUMN_FIREBASE_PATH = "fb_path";
+
+    public static final String TABLE_LIKED_POSTS = "liked_posts";
 
     public static final String TABLE_COMMENTS = "comments";
     public static final String COLUMN_ID_POST = "id_post";
@@ -55,7 +61,7 @@ public class EstructuraBBDD {
             "CREATE TABLE " + EstructuraBBDD.TABLE_NOTIFICATIONS + "(" +
                     EstructuraBBDD.COLUMN_ID + " INTEGER PRIMARY KEY, " +
                     EstructuraBBDD.COLUMN_ID_USER + " INTEGER, " +
-                    EstructuraBBDD.COLUMN_NOTIFY_TYPE + " TEXT CHECK(" + EstructuraBBDD.COLUMN_NOTIFY_TYPE + " IN ('" + EstructuraBBDD.ENUM_MSG + "', '" + EstructuraBBDD.ENUM_POST + "', '" + EstructuraBBDD.ENUM_FOLLOWER + "'))," +
+                    EstructuraBBDD.COLUMN_TYPE + " TEXT CHECK(" + EstructuraBBDD.COLUMN_TYPE + " IN ('" + EstructuraBBDD.ENUM_MSG + "', '" + EstructuraBBDD.ENUM_POST + "', '" + EstructuraBBDD.ENUM_FOLLOWER + "'))," +
                     EstructuraBBDD.COLUMN_SEND_DATE + " DATE, " +
                     "FOREIGN KEY (" + EstructuraBBDD.COLUMN_ID_USER + ") REFERENCES " + EstructuraBBDD.TABLE_USERS + "(" + EstructuraBBDD.COLUMN_ID + "))";
 
@@ -94,6 +100,16 @@ public class EstructuraBBDD {
                     EstructuraBBDD.COLUMN_DSCRIP + " TEXT, " +
                     EstructuraBBDD.COLUMN_SCIENTIFIC_NAME + " TEXT, " +
                     EstructuraBBDD.COLUMN_COMMON_NAME + " TEXT, " +
+                    EstructuraBBDD.COLUMN_FIREBASE_PATH + " TEXT, " +
+                    EstructuraBBDD.COLUMN_TYPE + " TEXT CHECK(" + EstructuraBBDD.COLUMN_TYPE + " IN ('" + EstructuraBBDD.ENUM_FUNGI + "', '" + EstructuraBBDD.ENUM_PLANTAE + "', '" + EstructuraBBDD.ENUM_ANIMALIA + "'))," +
+                    "FOREIGN KEY (" + EstructuraBBDD.COLUMN_ID_USER + ") REFERENCES " + EstructuraBBDD.TABLE_USERS + "(" + EstructuraBBDD.COLUMN_ID + "))";
+
+    public static final String SQL_CREATE_TABLE_LIKED_POSTS =
+            "CREATE TABLE " + EstructuraBBDD.TABLE_LIKED_POSTS + "(" +
+                    EstructuraBBDD.COLUMN_ID_POST + " INTEGER, " +
+                    EstructuraBBDD.COLUMN_ID_USER + " INTEGER, " +
+                    "PRIMARY KEY (" + EstructuraBBDD.COLUMN_ID_POST + ", " + EstructuraBBDD.COLUMN_ID_USER + "), " +
+                    "FOREIGN KEY (" + EstructuraBBDD.COLUMN_ID_POST + ") REFERENCES " + EstructuraBBDD.TABLE_POSTS + "(" + EstructuraBBDD.COLUMN_ID + ")," +
                     "FOREIGN KEY (" + EstructuraBBDD.COLUMN_ID_USER + ") REFERENCES " + EstructuraBBDD.TABLE_USERS + "(" + EstructuraBBDD.COLUMN_ID + "))";
 
     public static final String SQL_CREATE_TABLE_COMMENTS =

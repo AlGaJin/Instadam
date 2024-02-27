@@ -79,7 +79,7 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
-        //Acción para el botón que inicia la galería para escoger una imágen
+        //Acción para el botón que inicia la galería para escoger una imagen
         v.findViewById(R.id.galleryBtn).setOnClickListener(view -> {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             actResultLauncher.launch(galleryIntent);
@@ -100,7 +100,7 @@ public class EditProfileFragment extends Fragment {
         usernameEditTxt.setText(logedUser.getUsername());
         emailEditTxt.setText(logedUser.getEmail());
         if(logedUser.getDscp() != null) dscEditTxt.setText(logedUser.getDscp());
-        ((MainActivity)getActivity()).cargarProfilePic(logedUser, profilePicImgV);
+        ((MainActivity)getActivity()).cargarProfilePic(logedUser.getProfilePic(), profilePicImgV);
     }
 
     public void saveData(){
@@ -155,7 +155,7 @@ public class EditProfileFragment extends Fragment {
         UploadTask uploadTask = profPicRef.putBytes(data);
         uploadTask.addOnFailureListener(e -> Toast.makeText(getContext(), getResources().getString(R.string.firebase_error_upload), Toast.LENGTH_SHORT).show());
         uploadTask.addOnSuccessListener(e ->{
-            if(clonedUser.getProfilePic() != null && !clonedUser.getProfilePic().isEmpty()){
+            if(!clonedUser.getProfilePic().equals("profilePics/DEFAULT.png")){
                 StorageReference oldProfPicRef = stRef.child(clonedUser.getProfilePic());
                 oldProfPicRef.delete();
             }

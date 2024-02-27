@@ -52,7 +52,7 @@ public class SignUpActivity extends AppCompatActivity {
             }else{
                 if(Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     if(pwd.equals(confPwd)){
-                        switch (bdHelper.insertUser(username, pwd, email, new java.sql.Date(System.currentTimeMillis()))){
+                        switch (bdHelper.insertUser(username, pwd, email)){
                             case 0:
                                 Intent intent = new Intent(this, LoginActivity.class);
                                 intent.putExtra("username", username);

@@ -1,81 +1,74 @@
 package com.chex.instadam.java;
 
-import com.chex.instadam.enums.Type;
+import com.chex.instadam.enums.PostTypes;
+
+import java.sql.Date;
 
 public class Post {
-    private int profilePic;
-    private int postImg;
-    private String username;
+    private int id;
+    private int id_publisher;
+    private Date publish_date;
+    private String title;
+    private String dsc;
+    private PostTypes postType;
     private String sciName;
-    private String commonName;
-    private String desc;
-    private String date;
-    private Type type;
+    private String cmnName;
+    private String fbPostPath;
 
-    public Post(int profilePic,int postImg, String username,String sciName, String commonName, String desc, String date, Type type) {
-        this.profilePic = profilePic;
-        this.postImg = postImg;
-        this.username = username;
+    public Post(int id, int id_publisher, Date publish_date, String title, String dsc, PostTypes postType,
+                String sciName, String cmnName, String fbPostPath) {
+        this.id = id;
+        this.id_publisher = id_publisher;
+        this.publish_date = publish_date;
+        this.title = title;
+        this.dsc = dsc;
+        this.postType = postType;
         this.sciName = sciName;
-        this.commonName = commonName;
-        this.desc = desc;
-        this.date = date;
-        this.type = type;
+        this.cmnName = cmnName;
+        this.fbPostPath = fbPostPath;
     }
 
-    public int getProfilePic() {
-        return profilePic;
+    public int getId() {
+        return id;
     }
 
-    public void setProfilePic(int profilePic) {
-        this.profilePic = profilePic;
+    public int getId_publisher() {
+        return id_publisher;
     }
 
-    public int getPostImg() {
-        return postImg;
+    public Date getPublish_date() {
+        return publish_date;
     }
 
-    public void setPostImg(int postImg) {
-        this.postImg = postImg;
+    public String getTitle() {
+        return title;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public String getDsc() {
+        return dsc;
     }
 
     public String getSciName() {
         return sciName;
     }
 
-    public void setSciName(String sciName) {
-        this.sciName = sciName;
+    public String getCmnName() {
+        return cmnName;
     }
 
-    public String getCommonName() {
-        return commonName;
+    public PostTypes getPostType() {
+        return postType;
     }
 
-    public void setCommonName(String commonName) {
-        this.commonName = commonName;
+    public void setPostType(PostTypes postType) {
+        this.postType = postType;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getFbPostPath() {
+        return fbPostPath;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public void setFbPostPath(String fbPostPath) {
+        this.fbPostPath = fbPostPath;
     }
 }
