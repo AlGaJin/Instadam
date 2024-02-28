@@ -1,5 +1,6 @@
 package com.chex.instadam.rv_adapter;
 
+import android.content.res.ColorStateList;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,10 +41,10 @@ public class ChatMsgAdapter extends RecyclerView.Adapter<ChatMsgAdapter.ViewHold
         public void whoSends(int senderId){
             if(senderId == MainActivity.logedUser.getId()){
                 msgLinearLyt.setGravity(Gravity.END);
-                msgBg.setBackgroundColor(itemView.getResources().getColor(R.color.acentoOscuro, itemView.getContext().getTheme()));
+                msgBg.setBackgroundTintList(ColorStateList.valueOf(itemView.getResources().getColor(R.color.acentoClaro, itemView.getContext().getTheme())));
             }else{
                 msgLinearLyt.setGravity(Gravity.START);
-                msgBg.setBackgroundColor(itemView.getResources().getColor(R.color.primarioClaro, itemView.getContext().getTheme()));
+                msgBg.setBackgroundTintList(ColorStateList.valueOf(itemView.getResources().getColor(R.color.primarioClaro, itemView.getContext().getTheme())));
             }
         }
     }

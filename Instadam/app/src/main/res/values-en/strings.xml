@@ -57,4 +57,7 @@
     <string name="title_error">Write a title</string>
     <string name="enviar_mensaje">Send message</string>
     <string name="mensaje">Message</string>
+    <string name="you">You</string>
+    <string name="cambiar_idioma">Change language</string>
+    <string name="modo_oscuro">Dark mode</string>
 </resources>

@@ -20,15 +20,14 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="0"
             android:textSize="15sp"
-            android:text="TextView" />
-
+            android:textColor="@color/white" />
         <TextView
             android:id="@+id/dateTxtV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:textSize="12sp"
-            android:text="TextView" />
+            android:layout_gravity="bottom"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
     </LinearLayout>
 
 </LinearLayout>

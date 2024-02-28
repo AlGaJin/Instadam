@@ -39,7 +39,8 @@
                     android:id="@+id/chat_toolbarTxtV"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textColor="@color/white"/>
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
@@ -63,15 +64,17 @@
                 android:layout_weight="1"
                 android:background="@drawable/rounder"
                 android:backgroundTint="@color/acentoOscuro"
-                android:textColor="@color/white"
                 android:drawableStart="@drawable/chat"
                 android:drawablePadding="5dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="18dp"
+                android:drawableTint="@color/white"
                 android:ems="10"
                 android:hint="@string/mensaje"
-                android:inputType="textMultiLine"
-                android:minHeight="48dp" />
+                android:inputType="textCapSentences|textMultiLine"
+                android:minHeight="48dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="18dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
 
             <ImageButton
                 android:id="@+id/sendBtn"

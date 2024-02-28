@@ -48,7 +48,13 @@ public class ChatsFeedAdapter extends RecyclerView.Adapter<ChatsFeedAdapter.View
             ((MainActivity)itemView.getContext()).cargarProfilePic(otherUser.getProfilePic(),userImgV);
             Message msg = bdHelper.getLastMsg(chat.getId());
             if(msg != null){
-                msgTxtView.setText(msg.getMsg());
+                if(MainActivity.logedUser.getId() == msg.getUserId()){
+                    String youSendIt = itemView.getResources().getString(R.string.you) + ": " + msg.getMsg();
+                    msgTxtView.setText(youSendIt);
+                }else{
+                    msgTxtView.setText(msg.getMsg());
+                }
+
                 timeTxtView.setText(msg.getSendTime().toString().split(" ")[1].subSequence(0,5));
             }
             linearLayout.setOnClickListener(view -> ((MainActivity)itemView.getContext()).enviarMensaje(otherUser));
