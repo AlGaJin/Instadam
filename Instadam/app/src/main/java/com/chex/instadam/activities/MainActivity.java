@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +19,12 @@ import android.widget.ImageView;
 import com.chex.instadam.SQLite.BBDDHelper;
 import com.chex.instadam.enums.PostTypes;
 import com.chex.instadam.fragments.ChatFragment;
+import com.chex.instadam.fragments.ChatsFragment;
 import com.chex.instadam.fragments.EditProfileFragment;
 import com.chex.instadam.fragments.HomeFragment;
 import com.chex.instadam.R;
 import com.chex.instadam.fragments.NotificationFragment;
-import com.chex.instadam.fragments.PersonalProfileFragment;
+import com.chex.instadam.fragments.ProfileFragment;
 import com.chex.instadam.fragments.PostFragment;
 import com.chex.instadam.fragments.SearchFragment;
 import com.chex.instadam.fragments.SettingsFragment;
@@ -123,17 +125,19 @@ public class MainActivity extends AppCompatActivity {
             return new SearchFragment();
         }else if(id == R.id.message_menu){
             bttmNav.getMenu().getItem(2).setChecked(true);
-            return new ChatFragment();
+            return new ChatsFragment();
         }else if(id == R.id.settings_menu){
             return new SettingsFragment();
         }else if(id == R.id.profile_menu){
-            return new PersonalProfileFragment();
+            return new ProfileFragment();
         }else if(id == R.id.notificacion_menu){
             return new NotificationFragment();
-        }else if(id == R.id.editProfileBtn){
+        }else if(id == R.id.leftBtn){
             return new EditProfileFragment();
         }else if(id == R.id.aniadirFab){
             return new PostFragment();
+        }else if(id == R.id.sendBtn){
+            return new ChatFragment();
         }
 
         bttmNav.getMenu().getItem(0).setChecked(true);
@@ -186,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         if(id == R.id.notificacion_menu){
             fr = new NotificationFragment();
         }else if(id == R.id.profile_menu){
-            fr = new PersonalProfileFragment();
+            fr = new ProfileFragment();
         }else if(id == R.id.settings_menu){
             fr = new SettingsFragment();
         }
@@ -203,11 +207,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void verPerfil(int userId){
+        ProfileFragment fgt = new ProfileFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("userId", userId+"");
+        fgt.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                .replace(R.id.frLyt, fgt).commit();
+    }
+
     /**
      * Muestra el fragmento de editar el perfil
      */
     public void editarPerfil(){
-        addDeque(R.id.editProfileBtn);
+        addDeque(R.id.leftBtn);
         getSupportFragmentManager()
                 .beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
                 .replace(R.id.frLyt, new EditProfileFragment()).commit();
@@ -270,5 +284,21 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
             imgV.setImageBitmap(bitmap);
         });
+    }
+
+    public void enviarMensaje(User user) {
+        addDeque(R.id.sendBtn);
+        int chatId = bdHelper.getChatId(logedUser, user);
+        ChatFragment fgt = new ChatFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("userId", user.getId());
+        bundle.putInt("chatId", chatId);
+
+        fgt.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                .replace(R.id.frLyt, fgt).commit();
     }
 }

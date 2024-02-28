@@ -5,14 +5,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.chex.instadam.activities.MainActivity;
 import com.chex.instadam.enums.PostTypes;
+import com.chex.instadam.java.Chat;
+import com.chex.instadam.java.Message;
 import com.chex.instadam.java.Post;
 import com.chex.instadam.java.User;
 
 import java.security.MessageDigest;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -374,36 +378,99 @@ public class BBDDHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Post> getPostsByType(String postType){
-        List<Post> postsByType = new ArrayList<>();
+    private void createChat(User user, User otherUser){
+        ContentValues values = new ContentValues();
+        values.put(EstructuraBBDD.COLUMN_ID_USER, user.getId());
+        values.put(EstructuraBBDD.COLUMN_ID_OTHERUSER, otherUser.getId());
 
-        Cursor cursor = this.getReadableDatabase().rawQuery(
-                "SELECT * FROM " + EstructuraBBDD.TABLE_POSTS +
-                    " WHERE " + EstructuraBBDD.COLUMN_TYPE + "=?",
-                new String[]{postType}
-        );
-
-        while (cursor.moveToNext()){
-            postsByType.add(createPost(cursor));
-        }
-
-        return postsByType;
+        this.getWritableDatabase().insert(EstructuraBBDD.TABLE_CHATS, null, values);
     }
 
-    public List<Post> getPostsByType(String postType, User user){
-        List<Post> postsByType = new ArrayList<>();
+    public int getChatId(User user, User otherUser) {
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT " + EstructuraBBDD.COLUMN_ID +" FROM " + EstructuraBBDD.TABLE_CHATS +
+                    " WHERE (" + EstructuraBBDD.COLUMN_ID_USER + " =? AND " +
+                    EstructuraBBDD.COLUMN_ID_OTHERUSER + " =?) OR ("+
+                    EstructuraBBDD.COLUMN_ID_USER + "=? AND " +
+                    EstructuraBBDD.COLUMN_ID_OTHERUSER + "=?)",
+                new String[]{user.getId()+"",otherUser.getId()+"",otherUser.getId()+"",user.getId()+""}
+        );
+        int chatId = -1;
+        if(cursor.moveToNext()){
+            chatId = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
+        }else{
+            createChat(user, otherUser);
+            chatId = getChatId(user, otherUser);
+        }
+
+        return chatId;
+    }
+
+    public void insertMsg(String msg, int userId, int chatId){
+        ContentValues values = new ContentValues();
+        values.put(EstructuraBBDD.COLUMN_ID_CHAT, chatId);
+        values.put(EstructuraBBDD.COLUMN_ID_USER, userId);
+        values.put(EstructuraBBDD.COLUMN_MESSAGE, msg);
+        values.put(EstructuraBBDD.COLUMN_SEND_DATE, String.valueOf(new Timestamp(System.currentTimeMillis())));
+
+        this.getWritableDatabase().insert(EstructuraBBDD.TABLE_MESSAGES, null, values);
+    }
+
+    public Message createMsg(Cursor cursor, int chatId){
+        int userId = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID_USER));
+        String msg = cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_MESSAGE));
+        Timestamp sendTime = Timestamp.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_SEND_DATE)));
+
+        return new Message(chatId, userId, msg, sendTime);
+    }
+
+    public List<Message> getChatMsg(int chatId){
+        List<Message> msgList = new ArrayList<>();
 
         Cursor cursor = this.getReadableDatabase().rawQuery(
-                "SELECT * FROM " + EstructuraBBDD.TABLE_POSTS +
-                    " WHERE " + EstructuraBBDD.COLUMN_TYPE + "=? AND " +
-                    EstructuraBBDD.COLUMN_ID_USER + "=?",
-                new String[]{postType, user.getId()+""}
+          "SELECT * FROM " + EstructuraBBDD.TABLE_MESSAGES +
+              " WHERE " + EstructuraBBDD.COLUMN_ID_CHAT + "=?",
+              new String[]{chatId+""}
         );
 
         while (cursor.moveToNext()){
-            postsByType.add(createPost(cursor));
+            msgList.add(createMsg(cursor, chatId));
         }
 
-        return postsByType;
+        return msgList;
+    }
+
+    public List<Chat> getChats(int userId) {
+        List<Chat> chats = new ArrayList<>();
+
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT * FROM " + EstructuraBBDD.TABLE_CHATS +
+                        " WHERE " + EstructuraBBDD.COLUMN_ID_USER + "=? OR " +
+                        EstructuraBBDD.COLUMN_ID_OTHERUSER + "=?",
+                new String[]{userId+"",userId+""}
+        );
+
+        while (cursor.moveToNext()){
+            int chatId = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID));
+            int mUserId = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID_USER));
+            int otherUserId = cursor.getInt(cursor.getColumnIndexOrThrow(EstructuraBBDD.COLUMN_ID_OTHERUSER));
+
+            chats.add(new Chat(chatId, mUserId, otherUserId));
+        }
+
+        return chats;
+    }
+
+    public Message getLastMsg(int chatId) {
+        Cursor cursor = this.getReadableDatabase().rawQuery(
+                "SELECT * FROM " + EstructuraBBDD.TABLE_MESSAGES +
+                    " WHERE " + EstructuraBBDD.COLUMN_ID_CHAT + "=? ORDER BY "
+                    + EstructuraBBDD.COLUMN_SEND_DATE + " DESC LIMIT 1",
+                    new String[]{chatId+""}
+        );
+        if(cursor.moveToNext()){
+            return createMsg(cursor, chatId);
+        }
+        return null;
     }
 }

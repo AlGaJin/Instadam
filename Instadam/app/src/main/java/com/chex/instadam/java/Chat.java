@@ -4,35 +4,24 @@ import java.util.List;
 
 public class Chat {
     private int id;
-    private int userImg;
-    private String tmpMsg;
-    private String username;
-    private String time;
+    private int userId;
+    private int otherUserId;
 
-    public Chat(int id, int userImg, String tmpMsg, String username, String time) {
+    public Chat(int id, int userId, int otherUserId){
         this.id = id;
-        this.userImg = userImg;
-        this.tmpMsg = tmpMsg;
-        this.username = username;
-        this.time = time;
+        this.userId = userId;
+        this.otherUserId = otherUserId;
     }
 
     public int getId() {
         return id;
     }
 
-    public int getUserImg() {
-        return userImg;
-    }
-    public String getTmpMsg(){
-        return tmpMsg;
+    public int getUserId() {
+        return userId;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getTime() {
-        return time;
+    public int getOtherUserId() {
+        return otherUserId;
     }
 }

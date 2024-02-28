@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.PersonalProfileFragment">
+    tools:context=".fragments.ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -205,7 +205,7 @@
                 android:gravity="center">
 
                 <Button
-                    android:id="@+id/editProfileBtn"
+                    android:id="@+id/leftBtn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -214,7 +214,7 @@
                     android:text="@string/editar_perfil" />
 
                 <Button
-                    android:id="@+id/logoutBtn"
+                    android:id="@+id/rigthBtn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/red"

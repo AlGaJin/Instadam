@@ -2,11 +2,13 @@ package com.chex.instadam.rv_adapter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,7 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
+        private LinearLayout userLinearLyt;
         private ImageView userImV;
         private TextView usernameTxtV;
         private Button button;
@@ -41,6 +44,7 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Vi
 
         ViewHolder(@NonNull View itemView){
             super(itemView);
+            userLinearLyt = itemView.findViewById(R.id.userLinearLyt);
             userImV = itemView.findViewById(R.id.search_item_userImgV);
             usernameTxtV = itemView.findViewById(R.id.search_item_usernameTxtV);
             button = itemView.findViewById(R.id.search_item_btn);
@@ -48,6 +52,9 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Vi
         }
 
         public void bind(User user){
+            userLinearLyt.setOnClickListener(view -> {
+                ((MainActivity)itemView.getContext()).verPerfil(user.getId());
+            });
             usernameTxtV.setText(user.getUsername());
             cargarProfilePic(user, userImV);
             button.setText(getButtonText(user));

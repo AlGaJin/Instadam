@@ -87,7 +87,8 @@ public class EstructuraBBDD {
                     EstructuraBBDD.COLUMN_ID + " INTEGER PRIMARY KEY, " +
                     EstructuraBBDD.COLUMN_ID_USER + " INTEGER, " +
                     EstructuraBBDD.COLUMN_ID_CHAT + " INTEGER, " +
-                    EstructuraBBDD.COLUMN_SEND_DATE + " DATE, " +
+                    EstructuraBBDD.COLUMN_MESSAGE + " TEXT, " +
+                    EstructuraBBDD.COLUMN_SEND_DATE + " TIMESTAMP, " +
                     "FOREIGN KEY (" + EstructuraBBDD.COLUMN_ID_USER + ") REFERENCES " + EstructuraBBDD.TABLE_USERS + "(" + EstructuraBBDD.COLUMN_ID + "), " +
                     "FOREIGN KEY (" + EstructuraBBDD.COLUMN_ID_CHAT + ") REFERENCES " + EstructuraBBDD.TABLE_CHATS + "(" + EstructuraBBDD.COLUMN_ID + "))";
 

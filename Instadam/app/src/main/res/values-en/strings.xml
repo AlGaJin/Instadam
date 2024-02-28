@@ -55,4 +55,6 @@
     <string name="post_descripcion">Want to write something more?</string>
     <string name="publicar">Post</string>
     <string name="title_error">Write a title</string>
+    <string name="enviar_mensaje">Send message</string>
+    <string name="mensaje">Message</string>
 </resources>

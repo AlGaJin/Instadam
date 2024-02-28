@@ -13,15 +13,16 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chex.instadam.GridSpacingItemDecoration;
 import com.chex.instadam.R;
@@ -38,8 +39,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
-public class PersonalProfileFragment extends Fragment {
-    private final User logedUser = MainActivity.logedUser;
+public class ProfileFragment extends Fragment {
+    private User user;
     private FloatingActionButton aniadirFab, animaliaFab, plantaeFab, fungiFab;
     private View shadowBg;
     private boolean clicado;
@@ -47,6 +48,7 @@ public class PersonalProfileFragment extends Fragment {
     private List<Post> posts;
     private TextView usernameTxtV, followedTxtV, followingTxtV, compendioTxtV, dscpTxtV;
     private ImageView profilePicImgV;
+    private Button leftBtn, rightBtn;
     private BBDDHelper bdHelper;
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference stRef = storage.getReference();
@@ -82,10 +84,21 @@ public class PersonalProfileFragment extends Fragment {
         profilePicImgV = v.findViewById(R.id.fgt_profile_userImgV);
         compendioTxtV = v.findViewById(R.id.compendioTxtV);
         dscpTxtV = v.findViewById(R.id.dscpTxtV);
+        leftBtn = v.findViewById(R.id.leftBtn);
+        rightBtn = v.findViewById(R.id.rigthBtn);
+        aniadirFab = v.findViewById(R.id.aniadirFab);
 
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            user = bdHelper.getUserById(bundle.getString("userId"));
+        }else{
+            user = MainActivity.logedUser;
+        }
+
+        isLogedUser();
         cargarDatosPersonales();
 
-        posts = bdHelper.getUserPosts(logedUser);
+        posts = bdHelper.getUserPosts(user);
 
         rv = v.findViewById(R.id.fgt_profile_rv);
         rv.setLayoutManager(new GridLayoutManager(getContext(), 3));
@@ -95,7 +108,7 @@ public class PersonalProfileFragment extends Fragment {
         shadowBg = v.findViewById(R.id.shadow_bg);
         shadowBg.setOnClickListener(view -> aniadirFabClicked());
 
-        aniadirFab = v.findViewById(R.id.aniadirFab);
+
         clicado = false;
         aniadirFab.setOnClickListener(view -> aniadirFabClicked());
 
@@ -108,14 +121,6 @@ public class PersonalProfileFragment extends Fragment {
         fungiFab = v.findViewById(R.id.fungiFab);
         fungiFab.setOnClickListener(view -> ((MainActivity)getActivity()).crearPublicacion(PostTypes.FNG));
 
-        //Acción para el botón que permite editar los datos del perfil
-        v.findViewById(R.id.editProfileBtn).setOnClickListener(view -> {
-            ((MainActivity) getActivity()).editarPerfil();
-        });
-
-        //Acción para el botón que cierra la sesión
-        v.findViewById(R.id.logoutBtn).setOnClickListener(view -> logOut());
-
         //Cambiar la función del botón Back en el móvil
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
@@ -125,6 +130,41 @@ public class PersonalProfileFragment extends Fragment {
         });
 
         return v;
+    }
+
+    public void isLogedUser(){
+        if(user.getId() == MainActivity.logedUser.getId()){
+            //Acción para el botón que permite editar los datos del perfil
+            leftBtn.setOnClickListener(view -> {
+                ((MainActivity) getActivity()).editarPerfil();
+            });
+
+            //Acción para el botón que cierra la sesión
+            rightBtn.setOnClickListener(view -> logOut());
+        }else{
+            aniadirFab.setVisibility(View.GONE);
+            isFollowing();
+            //Acción para el botón que permite seguir o dejar de seguir al usuario
+            leftBtn.setOnClickListener(view -> {
+                bdHelper.changeFollow(MainActivity.logedUser, user);
+                isFollowing();
+            });
+
+            rightBtn.setText(R.string.enviar_mensaje);
+            rightBtn.setBackgroundColor(getResources().getColor(R.color.primarioClaro, getActivity().getTheme()));
+            //Acción para el botón que cierra la sesión
+            rightBtn.setOnClickListener(view -> {
+                ((MainActivity)getActivity()).enviarMensaje(user);
+            });
+        }
+    }
+
+    public void isFollowing(){
+        if(bdHelper.isFollowing(MainActivity.logedUser, user)){
+            leftBtn.setText(getResources().getString(R.string.siguiendo));
+        }else{
+            leftBtn.setText(getResources().getString(R.string.seguir));
+        }
     }
 
     /**
@@ -144,12 +184,12 @@ public class PersonalProfileFragment extends Fragment {
      * Carga los datos del usuario en la vista
      */
     private void cargarDatosPersonales() {
-        String username = logedUser.getUsername();
-        String imgUrl = logedUser.getProfilePic();
-        String followed = bdHelper.getNumberUserFollowed(logedUser.getId());
-        String following = bdHelper.getNumberUserFollowing(logedUser.getId());
-        String compendium = bdHelper.getNumberUserCompendium(logedUser.getId());
-        String dsc = logedUser.getDscp();
+        String username = user.getUsername();
+        String imgUrl = user.getProfilePic();
+        String followed = bdHelper.getNumberUserFollowed(user.getId());
+        String following = bdHelper.getNumberUserFollowing(user.getId());
+        String compendium = bdHelper.getNumberUserCompendium(user.getId());
+        String dsc = user.getDscp();
 
         usernameTxtV.setText(username);
         ((MainActivity)getActivity()).cargarProfilePic(imgUrl, profilePicImgV);

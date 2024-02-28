@@ -1,28 +1,35 @@
 package com.chex.instadam.java;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.GregorianCalendar;
 
 public class Message {
-    private int chat_id;
+    private int chatId;
+    private int userId;
     private String msg;
-    private String time;
+    private Timestamp sendTime;
 
-    public Message(int chat_id, String msg, String time) {
-        this.chat_id = chat_id;
+    public Message(int chatId, int userId, String msg, Timestamp sendTime) {
+        this.chatId = chatId;
+        this.userId = userId;
         this.msg = msg;
-        this.time = time;
+        this.sendTime = sendTime;
     }
 
-    public int getChat_id() {
-        return chat_id;
+    public int getChatId() {
+        return chatId;
     }
 
-    public String getMsg() {
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getMsg(){
         return msg;
     }
 
-    public String getTime() {
-        return time;
+    public Timestamp getSendTime() {
+        return sendTime;
     }
 }

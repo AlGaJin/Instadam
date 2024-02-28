@@ -60,4 +60,6 @@
         <item>Animalia</item>
     </string-array>
     <string name="title_error">Escribe un título</string>
+    <string name="enviar_mensaje">Enviar mensaje</string>
+    <string name="mensaje">Mensaje</string>
 </resources>
