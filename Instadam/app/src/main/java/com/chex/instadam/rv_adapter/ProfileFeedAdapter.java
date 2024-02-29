@@ -19,12 +19,17 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
+/**
+ * Adaptador para el RecyclerView de las publicaciones de un usuario
+ */
 public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.ViewHolder> {
-    private List<Post> posts;
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();
-    private final StorageReference stRef = storage.getReference();
+    private List<Post> posts; //Lista de publicaciones del usuario
 
     public ProfileFeedAdapter(List<Post> posts){this.posts = posts;}
+
+    /**
+     * Aplica los datos de cada publicación en cada elemento del RecyclerView
+     */
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private ImageView postImgV;
@@ -34,18 +39,12 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
             postImgV = itemView.findViewById(R.id.profile_item_postImgV);
         }
 
+        /**
+         * Aplica las imagenes a cada ImageView
+         * @param post El post que tiene almacenada la ruta de la imagen.
+         */
         public void bind(Post post){
-            cargarPostPic(post);
-        }
-
-        public void cargarPostPic(Post post) {
-            String image = post.getFbPostPath();
-            StorageReference imgRef = stRef.child(image);
-            final long EIGHT_MEGABYTE = 1024*1024*8;
-            imgRef.getBytes(EIGHT_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                postImgV.setImageBitmap(bitmap);
-            });
+            ((MainActivity)itemView.getContext()).cargarImagenFireBase(post.getFbPostPath(), postImgV);
         }
     }
 

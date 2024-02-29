@@ -25,11 +25,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Adaptador para el RecyclerView de los perfiles en el buscador
+ */
 public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.ViewHolder> {
-    private List<User> users;
-    private final User logedUser = MainActivity.logedUser;
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();
-    private final StorageReference stRef = storage.getReference();
+    private List<User> users; //Lista de usuarios registrados en la aplicación
+    private final User logedUser = MainActivity.logedUser; //Usuario que ha iniciado sesión
 
     public SearchFeedAdapter(List<User> users){
         this.users = users;
@@ -44,45 +45,46 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Vi
 
         ViewHolder(@NonNull View itemView){
             super(itemView);
+            bdHelper = new BBDDHelper(itemView.getContext());
+            //Recuperación de los elementos de la vista
             userLinearLyt = itemView.findViewById(R.id.userLinearLyt);
             userImV = itemView.findViewById(R.id.search_item_userImgV);
             usernameTxtV = itemView.findViewById(R.id.search_item_usernameTxtV);
             button = itemView.findViewById(R.id.search_item_btn);
-            bdHelper = new BBDDHelper(itemView.getContext());
         }
 
+        /**
+         * Aplica los datos a cada perfil
+         * @param user usuario que conteine los datos a aplicar
+         */
         public void bind(User user){
+            //Acción para el layout para que cunado se clicle sobre él se muestre el perfil del usuario
             userLinearLyt.setOnClickListener(view -> {
                 ((MainActivity)itemView.getContext()).verPerfil(user.getId());
             });
+
             usernameTxtV.setText(user.getUsername());
-            cargarProfilePic(user, userImV);
+            ((MainActivity)itemView.getContext()).cargarImagenFireBase(user.getProfilePic(), userImV);
+
             button.setText(getButtonText(user));
+            //Acción para el botón de seguir, permite seguir o dejar de seguir a un usuario
             button.setOnClickListener(view -> {
                 bdHelper.changeFollow(logedUser, user);
                 button.setText(getButtonText(user));
             });
         }
 
+        /**
+         * El setText necesita un String, no le agradan R.string
+         * @param user usuario que tiene los datos para saber si le sigue o no
+         * @return el String que se aplicará en el botón
+         */
         public int getButtonText(User user){
-            if(bdHelper.isFollowing(logedUser, user)){
+            if(bdHelper.isFollowing(logedUser, user)){//Comprueba si le está siguiendo y devuelve un String u otro
                 return R.string.siguiendo;
             }else{
                 return R.string.seguir;
             }
-        }
-
-        public void cargarProfilePic(User user, ImageView imgV) {
-            String image = "profilePics/DEFAULT.png";
-            if(user.getProfilePic() != null){
-                image = user.getProfilePic();
-            }
-            StorageReference imgRef = stRef.child(image);
-            final long EIGHT_MEGABYTE = 1024*1024*8;
-            imgRef.getBytes(EIGHT_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                imgV.setImageBitmap(bitmap);
-            });
         }
     }
 
@@ -90,7 +92,6 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item_feed, parent, false);
-
         return new ViewHolder(v);
     }
 

@@ -1,8 +1,11 @@
 package com.chex.instadam.java;
 
+/**
+ * Representa una notificación, recogiendo los datos necesarios para identificar una notificación
+ */
 public class Notification {
-    private String notiMsg;
-    private int otherUserProfilePic;
+    private String notiMsg; //Mensaje de la notificación
+    private int otherUserProfilePic; //Id del drawable del usuario
 
     public Notification(String notiMsg, int otherUserProfilePic){
         this.notiMsg = notiMsg;
@@ -13,15 +16,7 @@ public class Notification {
         return notiMsg;
     }
 
-    public void setNotiMsg(String notiMsg) {
-        this.notiMsg = notiMsg;
-    }
-
     public int getOtherUserProfilePic() {
         return otherUserProfilePic;
-    }
-
-    public void setOtherUserProfilePic(int otherUserProfilePic) {
-        this.otherUserProfilePic = otherUserProfilePic;
     }
 }

@@ -25,18 +25,23 @@ import com.chex.instadam.rv_adapter.HomeFeedAdapter;
 
 import java.util.List;
 
+/**
+ * Da funcionalidad a la vista del Home, se encuentran las publicaciones de los usuarios a los
+ * que el usuario que ha iniciado sesión sigue
+ */
 public class HomeFragment extends Fragment {
 
     private RecyclerView rv;
     private BBDDHelper bdHelper;
     private final User logedUser = MainActivity.logedUser;
 
+    //Permite modificar el toolBar del MainActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
-
+    //Modificaciones del toolbar del MainActivity. Así se consigue un solo toolbar para todos los fragmentos
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
@@ -56,15 +61,6 @@ public class HomeFragment extends Fragment {
 
         //Crea la lista de publicaciones de los usuarios a los que sigue el usuario que ha iniciado sesión
         List<Post> posts = bdHelper.getFollowedPosts(logedUser);
-        posts.sort((post1, post2) -> {
-            if(post1.getPublish_date().before(post2.getPublish_date())){
-                return 1;
-            }else if(post1.getPublish_date().after(post2.getPublish_date())){
-                return -1;
-            }else{
-                return 0;
-            }
-        });
 
         //Recupera el Recycler View y lo carga con los posts que se han obtenido y ordenado anteriormente
         rv = v.findViewById(R.id.fgt_home_rv);

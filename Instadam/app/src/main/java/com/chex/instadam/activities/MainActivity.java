@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +36,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
+/**
+ * Permite gestionar la funcionaliadad principal de la aplicación.
+ * En ella se mostrarán los diferentes fragmentos.
+ */
 public class MainActivity extends AppCompatActivity {
     // Declaración de variables que se van a usar en diferentes puntos del programa
     private BottomNavigationView bttmNav;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean flag; // Boleano necesario para Back Stack casero
     public static User logedUser; //Usuario que ha iniciado sesión, se necesitará en más zonas del código
     private BBDDHelper bdHelper;
+    //Variables que permiten la conexión con la base de datos en la nube (FireBase)
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference stRef = storage.getReference();
 
@@ -207,6 +211,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Lanza el fragmento del Perfil para un usuario que no es el que ha iniciado sesión
+     * @param userId id del usuario del que quiere verse el perfil
+     */
     public void verPerfil(int userId){
         ProfileFragment fgt = new ProfileFragment();
         Bundle bundle = new Bundle();
@@ -277,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
      * @param imgPath Ruta donde se almacena la imagen en FireBase
      * @param imgV El Imagen View sobre el que se va a cargar la imagen de FireBase
      */
-    public void cargarProfilePic(String imgPath, ImageView imgV) {
+    public void cargarImagenFireBase(String imgPath, ImageView imgV) {
         StorageReference imgRef = stRef.child(imgPath);
         final long EIGHT_MEGABYTE = 1024*1024*8;
         imgRef.getBytes(EIGHT_MEGABYTE).addOnSuccessListener(bytes -> {
@@ -286,6 +294,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Lanza el fragmento para enviar mensajes en un chat
+     * @param user el usuario al que van a enviarse mensajes
+     */
     public void enviarMensaje(User user) {
         addDeque(R.id.sendBtn);
         int chatId = bdHelper.getChatId(logedUser, user);

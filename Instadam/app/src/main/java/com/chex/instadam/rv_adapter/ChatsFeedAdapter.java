@@ -1,6 +1,5 @@
 package com.chex.instadam.rv_adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * Adaptador para el RecyclerView de los chats que tiene un usuario
+ */
 public class ChatsFeedAdapter extends RecyclerView.Adapter<ChatsFeedAdapter.ViewHolder> {
-    private List<Chat> chats;
+    private List<Chat> chats; //Lista de chats que tiene
 
     public ChatsFeedAdapter(List<Chat> chats){
         this.chats = chats;
     }
 
+    /**
+     * Aplica los datos de cada chat en cada elemento del RecyclerView
+     */
     public class ViewHolder extends RecyclerView.ViewHolder{
         private LinearLayout linearLayout;
         private ImageView userImgV;
@@ -34,6 +39,7 @@ public class ChatsFeedAdapter extends RecyclerView.Adapter<ChatsFeedAdapter.View
         private BBDDHelper bdHelper;
         ViewHolder(@NonNull View itemView){
             super(itemView);
+            //Recuperación de los elementos de la vista
             linearLayout = itemView.findViewById(R.id.chat_item_linearLyt);
             userImgV = itemView.findViewById(R.id.chat_item_userImgView);
             usernameTxtView = itemView.findViewById(R.id.chat_item_usernameTxtView);
@@ -42,12 +48,20 @@ public class ChatsFeedAdapter extends RecyclerView.Adapter<ChatsFeedAdapter.View
             bdHelper = new BBDDHelper(itemView.getContext());
         }
 
+        /**
+         * Aplica los datos a cada chat
+         * @param chat el chat con los datos para aplicar en la vista
+         */
         public void bind(Chat chat){
-            User otherUser = getOtherUser(chat);
+            User otherUser = getOtherUser(chat);//Se obtiene el otro usuario para aplicar los datos necesarios
+
             usernameTxtView.setText(otherUser.getUsername());
-            ((MainActivity)itemView.getContext()).cargarProfilePic(otherUser.getProfilePic(),userImgV);
-            Message msg = bdHelper.getLastMsg(chat.getId());
-            if(msg != null){
+            ((MainActivity)itemView.getContext()).cargarImagenFireBase(otherUser.getProfilePic(),userImgV);
+
+            Message msg = bdHelper.getLastMsg(chat.getId()); //Se obtiene el último mensaje del chat
+            if(msg != null){ //Si se hubiera creado el chat y no hubiera mensajes no hace anda, por el contrario:
+
+                //Comprueba de quién es el mensaje, si es del usuario que ha iniciado sesión lo indicará con un 'Tú:' + el mensaje
                 if(MainActivity.logedUser.getId() == msg.getUserId()){
                     String youSendIt = itemView.getResources().getString(R.string.you) + ": " + msg.getMsg();
                     msgTxtView.setText(youSendIt);
@@ -55,11 +69,17 @@ public class ChatsFeedAdapter extends RecyclerView.Adapter<ChatsFeedAdapter.View
                     msgTxtView.setText(msg.getMsg());
                 }
 
-                timeTxtView.setText(msg.getSendTime().toString().split(" ")[1].subSequence(0,5));
+                timeTxtView.setText(msg.getSendTime().toString().split(" ")[1].subSequence(0,5)); //La hora a la que se envió el mensaje
             }
+            //Le da acción al contenedor, para que cuando se pulse se abra el chat
             linearLayout.setOnClickListener(view -> ((MainActivity)itemView.getContext()).enviarMensaje(otherUser));
         }
 
+        /**
+         * Comprueba quién es el otro usuario
+         * @param chat chat que contiene los dos id de usuarios
+         * @return el usuario que no es el que ha iniciado sesión
+         */
         public User getOtherUser(Chat chat){
             if(chat.getOtherUserId() == MainActivity.logedUser.getId()){
                 return bdHelper.getUserById(chat.getUserId()+"");

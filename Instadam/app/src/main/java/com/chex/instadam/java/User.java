@@ -1,11 +1,11 @@
 package com.chex.instadam.java;
 
 public class User {
-    private int id;
-    private String username;
-    private String email;
-    private String profilePic;
-    private String dscp;
+    private int id; //Id del usuario en la base de datos
+    private String username; //Nombre de usuario
+    private String email; //Correo electrónico del usuario
+    private String profilePic; //Ruta de la imagen en FireBase del usuario
+    private String dscp; //Descripción del usuario
 
     public User(int id, String username, String email, String profilePic, String dscp) {
         this.id = id;

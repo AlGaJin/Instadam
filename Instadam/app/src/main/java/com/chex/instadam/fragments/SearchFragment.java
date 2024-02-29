@@ -23,6 +23,9 @@ import com.chex.instadam.SQLite.BBDDHelper;
 import com.chex.instadam.activities.MainActivity;
 import com.chex.instadam.rv_adapter.SearchFeedAdapter;
 
+/**
+ * Da funcionalidad a la vista de busqueda de usuarios de la aplicación
+ */
 public class SearchFragment extends Fragment {
     private RecyclerView rv;
     private BBDDHelper bdHelper;
@@ -61,12 +64,6 @@ public class SearchFragment extends Fragment {
         searchEditTxt = v.findViewById(R.id.searchEditTxt);
         //Se le añade un listener que espera a que se cambie el texto, permite la busqueda dinámica (sin pulser enter)
         searchEditTxt.addTextChangedListener(new TextWatcher() {
-            //Estos dos métodos son obligatorios de implementar, sin embargo no son necsarios
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
             //Con el uso del dbHelper, se hacen busquedas dinámicas
             @Override
             public void afterTextChanged(Editable editable) {
@@ -77,13 +74,13 @@ public class SearchFragment extends Fragment {
                     rv.setAdapter(new SearchFeedAdapter(bdHelper.getFilteredUsers(MainActivity.logedUser, filter)));
                 }
             }
+
+            //Estos dos métodos son obligatorios de implementar, sin embargo no son necsarios
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
         });
         return v;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity) getActivity()).activarBtnNav();
     }
 }

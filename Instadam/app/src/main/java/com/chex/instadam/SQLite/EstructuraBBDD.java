@@ -1,5 +1,9 @@
 package com.chex.instadam.SQLite;
 
+/**
+ * Estructura la Base de datos, por lo que si se quiere cambiar algún nombre deberá de cambiarse
+ * aquí para que se cambie en todos los lados donde se use
+ */
 public class EstructuraBBDD {
     public static final String DATABASE_NAME = "instadam";
     public static final int DATABASE_VERSION = 1;

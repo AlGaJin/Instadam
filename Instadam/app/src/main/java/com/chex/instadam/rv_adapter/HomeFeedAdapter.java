@@ -22,15 +22,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * Adaptador para el RecyclerView de las publicaciones que se muestran en la página principal
+ */
 public class HomeFeedAdapter extends RecyclerView.Adapter<HomeFeedAdapter.ViewHolder> {
-    private List<Post> posts;
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();
-    private final StorageReference stRef = storage.getReference();
+    private List<Post> posts; //Lista de publicaciones a mostrar
 
     public HomeFeedAdapter(List<Post> posts){
         this.posts = posts;
     }
 
+    /**
+     * Aplica los datos de cada publicación en cada elemento del RecyclerView
+     */
     public class ViewHolder extends RecyclerView.ViewHolder{
         private ImageView userImgV, postImgV;
         private ImageButton likeBtn;
@@ -39,6 +43,8 @@ public class HomeFeedAdapter extends RecyclerView.Adapter<HomeFeedAdapter.ViewHo
         ViewHolder(@NonNull View itemView){
             super(itemView);
             bdHelper = new BBDDHelper(itemView.getContext());
+
+            //Recuperación de los elementos de la vista
             userImgV = itemView.findViewById(R.id.chat_item_userImgView);
             postImgV = itemView.findViewById(R.id.postImgView);
             usernameTxtView = itemView.findViewById(R.id.usernameTxtView);
@@ -50,12 +56,18 @@ public class HomeFeedAdapter extends RecyclerView.Adapter<HomeFeedAdapter.ViewHo
             totalLikes = itemView.findViewById(R.id.totalLikes);
         }
 
+        /**
+         * Aplica los datos a cada publicación
+         * @param post la publicación con los datos para aplicar en la vista
+         */
         public void bind(Post post){
-            User publisher = bdHelper.getUserById(post.getId_publisher()+"");
+            User publisher = bdHelper.getUserById(post.getId_publisher()+""); //Se recupera al usuario que ha hecho la publicación
 
-            cargarImagenFB(publisher.getProfilePic(), userImgV);
-            cargarImagenFB(post.getFbPostPath(), postImgV);
+            //Recuperación de las imágenes de FireBase
+            ((MainActivity)itemView.getContext()).cargarImagenFireBase(publisher.getProfilePic(), userImgV);
+            ((MainActivity)itemView.getContext()).cargarImagenFireBase(post.getFbPostPath(), postImgV);
 
+            //Texto de la publicación
             usernameTxtView.setText(publisher.getUsername());
             titleTxtV.setText(post.getTitle());
             dscTxtV.setText(post.getDsc());
@@ -64,27 +76,26 @@ public class HomeFeedAdapter extends RecyclerView.Adapter<HomeFeedAdapter.ViewHo
 
             isLiked(post);
 
+            //Acción para darle me gusta a una publicación
             likeBtn.setOnClickListener(view -> {
                 bdHelper.changeLikedPost(MainActivity.logedUser, post);
                 isLiked(post);
             });
         }
 
+        /**
+         * Comprueba si el usuario que ha iniciado sesión le ha dado me gusta
+         * @param post publicación necesaria para obtener datos en la base de datos
+         */
         public void isLiked(Post post){
+            //Cambia el drawable del corazón según esté con me gusta o no
             if(bdHelper.isLiked(MainActivity.logedUser, post)){
                 likeBtn.setImageDrawable(itemView.getResources().getDrawable(R.drawable.liked, null));
             }else{
                 likeBtn.setImageDrawable(itemView.getResources().getDrawable(R.drawable.unliked, null));
             }
+            //Cambia el total de me gustas mostrados
             totalLikes.setText(String.valueOf(bdHelper.getTotalLikes(post)));
-        }
-        public void cargarImagenFB(String path, ImageView imgV) {
-            StorageReference imgRef = stRef.child(path);
-            final long EIGHT_MEGABYTE = 1024*1024*8;
-            imgRef.getBytes(EIGHT_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                imgV.setImageBitmap(bitmap);
-            });
         }
     }
 

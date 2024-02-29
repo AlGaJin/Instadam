@@ -23,17 +23,21 @@ import com.chex.instadam.rv_adapter.ChatsFeedAdapter;
 
 import java.util.List;
 
+/**
+ * Da funcionalidad al fragmento que muestra todos los chats que tiene un usuario
+ */
 public class ChatsFragment extends Fragment {
 
     private RecyclerView rv;
     private BBDDHelper bdHelper;
 
+    //Permite modificar el toolBar del MainActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
-
+    //Modificaciones del toolbar del MainActivity. Así se consigue un solo toolbar para todos los fragmentos
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
@@ -51,8 +55,9 @@ public class ChatsFragment extends Fragment {
 
         bdHelper = new BBDDHelper(getContext());
 
-        List<Chat> chats = bdHelper.getChats(MainActivity.logedUser.getId());
+        List<Chat> chats = bdHelper.getChats(MainActivity.logedUser.getId()); //Se recupera la lista de chats que tiene el usuario que ha iniciado sesión
 
+        //Configuración del RecyclerView
         rv = v.findViewById(R.id.chat_rv);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new ChatsFeedAdapter(chats));

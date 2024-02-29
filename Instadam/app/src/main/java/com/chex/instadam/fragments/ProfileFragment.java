@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -13,7 +12,6 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,9 +37,12 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
+/**
+ * Da funcionalidad a la vista que muestra datos de los usuarios
+ */
 public class ProfileFragment extends Fragment {
-    private User user;
-    private FloatingActionButton aniadirFab, animaliaFab, plantaeFab, fungiFab;
+    private User user; //Usuario del que se van a obtener los datos
+    private FloatingActionButton aniadirFab, animaliaFab, plantaeFab, fungiFab; //Permite subir una publciación
     private View shadowBg;
     private boolean clicado;
     private RecyclerView rv;
@@ -53,12 +54,13 @@ public class ProfileFragment extends Fragment {
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference stRef = storage.getReference();
 
+    //Permite modificar el toolBar del MainActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
-
+    //Modificaciones del toolbar del MainActivity. Así se consigue un solo toolbar para todos los fragmentos
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
@@ -74,10 +76,11 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        ((MainActivity) getActivity()).desactivarBtnNav();
+        ((MainActivity) getActivity()).desactivarBtnNav();//Oculta el Bottom Nav View
 
-        bdHelper = new BBDDHelper(getContext());
+        bdHelper = new BBDDHelper(getContext()); //Conexión con la base de datos local
 
+        //Recuperación de los elementos que hay en la vista
         usernameTxtV = v.findViewById(R.id.fgt_profile_userameTxtView);
         followedTxtV = v.findViewById(R.id.seguidosTxtV);
         followingTxtV = v.findViewById(R.id.seguidoresTxtV);
@@ -88,24 +91,28 @@ public class ProfileFragment extends Fragment {
         rightBtn = v.findViewById(R.id.rigthBtn);
         aniadirFab = v.findViewById(R.id.aniadirFab);
 
+        //Si el perfil que se va a mostrar no es el de la persona que ha iniciado sesión,
+        //se pasará por argumentos el id del usuario
         Bundle bundle = getArguments();
         if(bundle != null){
-            user = bdHelper.getUserById(bundle.getString("userId"));
+            user = bdHelper.getUserById(bundle.getString("userId")); //Se recupera el usuario con ayuda de la base de datos
         }else{
-            user = MainActivity.logedUser;
+            user = MainActivity.logedUser;//Si no hay argumentos, se entiende que se cargará la vista del usuario que ha iniciado sesión
         }
 
-        isLogedUser();
-        cargarDatosPersonales();
+        isLogedUser();//Comprueba qué usuario es
+        cargarDatosPersonales();//Recupera los datos del usuario y los setea para mostrarlos
 
-        posts = bdHelper.getUserPosts(user);
+        posts = bdHelper.getUserPosts(user); //Recuepra las publicaciones del usuario
 
+        //Configuración del Recycler View
         rv = v.findViewById(R.id.fgt_profile_rv);
         rv.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        rv.addItemDecoration(new GridSpacingItemDecoration(3, 15, true));
+        rv.addItemDecoration(new GridSpacingItemDecoration(3, 15, true)); //Decoración que genera un espacio concreto entre las imágenes
         rv.setAdapter(new ProfileFeedAdapter(posts));
 
         shadowBg = v.findViewById(R.id.shadow_bg);
+        //Si se pulsa la pantalla cuando está el fondo se quita, como si se pulsara para cancelar en el botón flotante
         shadowBg.setOnClickListener(view -> aniadirFabClicked());
 
 
@@ -121,17 +128,19 @@ public class ProfileFragment extends Fragment {
         fungiFab = v.findViewById(R.id.fungiFab);
         fungiFab.setOnClickListener(view -> ((MainActivity)getActivity()).crearPublicacion(PostTypes.FNG));
 
-        //Cambiar la función del botón Back en el móvil
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                ((MainActivity) getActivity()).accionBack();
-            }
-        });
-
         return v;
     }
 
+    /**
+     * Modifica la vista dependiendo de qué usuario sea:
+     *  -Si es el usuario que ha iniciado sesión, se mostrará:
+     *      +Botón flotante para hacer una publicación
+     *      +Botón para editar el perfil
+     *      +Botón para cerrar sesión
+     *  -Si es otro usuario registrado, se mostrará:
+     *      +Botón para seguir
+     *      +Botón para enviar mensaje
+     */
     public void isLogedUser(){
         if(user.getId() == MainActivity.logedUser.getId()){
             //Acción para el botón que permite editar los datos del perfil
@@ -165,6 +174,7 @@ public class ProfileFragment extends Fragment {
         }else{
             leftBtn.setText(getResources().getString(R.string.seguir));
         }
+        followingTxtV.setText(bdHelper.getNumberUserFollowing(user.getId()));
     }
 
     /**
@@ -192,7 +202,7 @@ public class ProfileFragment extends Fragment {
         String dsc = user.getDscp();
 
         usernameTxtV.setText(username);
-        ((MainActivity)getActivity()).cargarProfilePic(imgUrl, profilePicImgV);
+        ((MainActivity)getActivity()).cargarImagenFireBase(imgUrl, profilePicImgV);
         followedTxtV.setText(followed);
         followingTxtV.setText(following);
         compendioTxtV.setText(compendium);

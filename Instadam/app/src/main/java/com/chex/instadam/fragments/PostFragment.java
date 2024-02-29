@@ -35,15 +35,19 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
 
+/**
+ * Da funcionalidad a la vista de crear una nueva publicación
+ */
 public class PostFragment extends Fragment {
-    private boolean isImgVUsed = false;
-    private Spinner postTypeSpinner;
+    private boolean isImgVUsed = false; //Permite saber si se ha creado una imágen para publicar
+    private Spinner postTypeSpinner; //Spinner para seleccionar el reino
     private ImageView postImgV;
     private EditText titleEditTxt, sciNameEditTxt, cmnNameEditTxt, dscEditTxt;
-    private String fbPostPicPath;
-    private View shadowBG;
-    private ProgressBar progressBar;
+    private String fbPostPicPath; //Almacena el path de la imagen en FireBase
+    private View shadowBG; //Vista que oscurece la pantalla mientras se publica la imagen
+    private ProgressBar progressBar; //Barra de progreso que se muestra miestras se publica la imagen
     private BBDDHelper bdHelper;
+    //Variables que permiten la conexión con la base de datos en la nube (FireBase)
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference stRef = storage.getReference();
 
@@ -52,8 +56,9 @@ public class PostFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_post, container, false);
 
-        bdHelper = new BBDDHelper(getContext());
+        bdHelper = new BBDDHelper(getContext()); //Conexión con la base de datos local
 
+        //Recuperación del spinner de la vista y aplicación de un adapter para mostrar las diferentes opciones
         postTypeSpinner = v.findViewById(R.id.post_typeSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 getContext(),
@@ -62,7 +67,7 @@ public class PostFragment extends Fragment {
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         postTypeSpinner.setAdapter(adapter);
-        switch (getArguments().getString("type")){
+        switch (getArguments().getString("type")){ //Carga el spinner con la opción obtenida al crear el fragmento
             case "FNG":
                 postTypeSpinner.setSelection(0);
                 break;
@@ -74,12 +79,16 @@ public class PostFragment extends Fragment {
                 break;
         }
 
+        //Recuperación de los elementos de la vista
         postImgV = v.findViewById(R.id.post_postImgV);
         titleEditTxt = v.findViewById(R.id.post_titleEditTxt);
         sciNameEditTxt = v.findViewById(R.id.post_sciNameEditTxt);
         cmnNameEditTxt = v.findViewById(R.id.post_cmnNameEditTxt);
         dscEditTxt = v.findViewById(R.id.post_dscEditTxt);
+        shadowBG = v.findViewById(R.id.post_shadow_bg);
+        progressBar = v.findViewById(R.id.progressBar);
 
+        //Permite cambiar la imagen al seleccionar una imagen o al hacer una foto con los respectivos intents
         ActivityResultLauncher<Intent> actResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->{
             if (result.getResultCode() == Activity.RESULT_OK){
                 Intent data = result.getData();
@@ -92,46 +101,49 @@ public class PostFragment extends Fragment {
                 isImgVUsed = true;
             }
         });
-
+        //Acción para el botón que inicia la galería para escoger una imagen
         v.findViewById(R.id.post_galleryBtn).setOnClickListener(view -> {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             actResultLauncher.launch(galleryIntent);
         });
-
+        //Acción para el botón que inicia la cámara para hacer una foto
         v.findViewById(R.id.post_cameraBtn).setOnClickListener(view -> {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             actResultLauncher.launch(cameraIntent);
         });
-
+        //Acción para el botón que permite publicar la imagen
         v.findViewById(R.id.post_saveBtn).setOnClickListener(view -> {
             publicar();
         });
 
-        shadowBG = v.findViewById(R.id.post_shadow_bg);
-        progressBar = v.findViewById(R.id.progressBar);
-
         return v;
     }
 
+    /**
+     * Publica una imagen con almenos el título y lo almacena en la base de datos local
+     */
     public void publicar(){
-        if(isImgVUsed) {
+        if(isImgVUsed) {//Comprueba que se haya subido seleccionado una imagen
             String title = titleEditTxt.getText().toString().trim();
             String sciName = sciNameEditTxt.getText().toString().trim();
             String cmnName = cmnNameEditTxt.getText().toString().trim();
             String dsc = dscEditTxt.getText().toString().trim();
             String type = postTypeSpinner.getSelectedItem().toString();
 
-            if(title.isEmpty()){
+            if(title.isEmpty()){//Se necesita un título para poder publicar
                 titleEditTxt.setError(getResources().getString(R.string.title_error));
             }else{
-                uploadImageFB();
-                bdHelper.insertPost(title, sciName, cmnName, dsc, type, MainActivity.logedUser, fbPostPicPath);
+                uploadImageFB(); //Se sube la imagen a la base de datos remota
+                bdHelper.insertPost(title, sciName, cmnName, dsc, type, MainActivity.logedUser, fbPostPicPath); //Se almacena la publicación en la base de datos local
             }
         }else{
             Toast.makeText(getContext(), getResources().getString(R.string.haz_selecciona_foto), Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Almacena en la nube la imagen seteada al ImageView
+     */
     public void uploadImageFB(){
         fbPostPicPath = "postPics/" + MainActivity.logedUser.getUsername() + "_" + new Timestamp(System.currentTimeMillis()) + ".jpeg";
         StorageReference profPicRef = stRef.child(fbPostPicPath);

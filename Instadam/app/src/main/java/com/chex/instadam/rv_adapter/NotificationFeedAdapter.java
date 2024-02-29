@@ -14,6 +14,9 @@ import com.chex.instadam.java.Notification;
 
 import java.util.List;
 
+/**
+ * Adapador para el RecyclerView de las notificaciones ((W.I.P))
+ */
 public class NotificationFeedAdapter extends RecyclerView.Adapter<NotificationFeedAdapter.ViewHolder>{
     private List<Notification> notifications;
 

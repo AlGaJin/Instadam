@@ -13,11 +13,14 @@ import androidx.preference.PreferenceManager;
 import com.chex.instadam.R;
 import com.chex.instadam.SQLite.BBDDHelper;
 
+/**
+ * Da funcionalidad a la vista de Inicio de sesión
+ */
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText nameEditTxt, pwdEditTxt;
-    private CheckBox rememberMe;
-    private SharedPreferences preferences;
+    private EditText nameEditTxt, pwdEditTxt; //Campos para escribir nombre y contraseña respectivamente
+    private CheckBox rememberMe; //Si se activa permite almacenar en SharedPreferences al usuario y mantener la sesión iniciada
+    private SharedPreferences preferences; //Recuperar o almacenar el usuario que activa el checkbox
     private BBDDHelper bdHelper;
 
     @Override
